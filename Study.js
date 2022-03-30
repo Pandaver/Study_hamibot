@@ -4,7 +4,7 @@ importClass(java.net.HttpURLConnection);
 importClass(java.net.URL);
 importClass(java.io.File);
 importClass(java.io.FileOutputStream);
-var url = 'https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/Study_hamibot/main/QuestionBank.db';
+var url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/QuestionBank.db';
 var path = '/sdcard/QuestionBank.db';
 device.wakeUpIfNeeded(); //点亮屏幕
 var first = true;//记录答题的第一次
@@ -57,7 +57,7 @@ var question_list = [];
 var init_true = false;
 var downloadDialog = null;
 // var init_url = "https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/question";    
-var init_url = 'https://gitee.com/lctwelve/picture/raw/master/question';
+var init_url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/question';
 var file_tmp = false;
 var tikus = '';
 /**
@@ -246,7 +246,7 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 function show_log(){    // 使用须知
     threads.start(function () {
         try{
-            var text = http.get('https://gitee.com/lctwelve/picture/raw/master/showlogs').body.string();
+            var text = http.get('https://gitee.com/wangwang-code/picture-bed/raw/master/showlogs').body.string();
             if(text.length == 0) {
                 show_log = true;
                 return;
@@ -2487,7 +2487,7 @@ function init(){
 
     threads.start(function () {
         try{
-            var x = http.get('https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/replace.js').body.string();
+            var x = http.get('https://gitee.com/wangwang-code/picture-bed/raw/master/replace.js').body.string();
             files.write('/sdcard/replace.js', x);
             r = require('/sdcard/replace.js');
         }catch(e){}
