@@ -85,6 +85,13 @@
     "help": "勾选之前，需要配置以下信息"
   },
   {
+    "name": "cic",
+    "type": "number",
+    "label": "四人/双人循环读取答案是否正确次数",
+    "validation": "required",
+    "help": "说明：判断颜色来确定是否正确，0禁用，推荐值14，一般10~15"
+  },
+  {
     "name": "delay_s",
     "type": "number",
     "label": "四人/双人点击的延迟时间ms毫秒",

@@ -19,6 +19,8 @@ var video = hamibot.env.video;
 var meiri = hamibot.env.meiri;
 var tiaozhan = hamibot.env.tiaozhan;
 
+var cic = hamibot.env.cic;
+
 var choose = hamibot.env.select_01;
 
 var 专项答题下滑 = hamibot.env.select;
@@ -1922,12 +1924,15 @@ function challengeQuestionLoop(conNum) {
                 if (!text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
                         "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists() || text("再来一局").exists()) //遇到❌号，则答错了,不再通过结束本局字样判断
                 {
-                    // console.log("题库答案正确……");
+                    console.log("题库答案正确……");
                 }
                 if (text("v5IOXn6lQWYTJeqX2eHuNcrPesmSud2JdogYyGnRNxujMT8RS7y43zxY4coWepspQkvw" +
                         "RDTJtCTsZ5JW+8sGvTRDzFnDeO+BcOEpP0Rte6f+HwcGxeN2dglWfgH8P0C7HkCMJOAAAAAElFTkSuQmCC").exists() || text("再来一局").exists()) //遇到❌号，则答错了,不再通过结束本局字样判断
                 {
                     console.error("答案错误!!!");
+					console.error("题目：" + question + "答案：" + answer);
+					var texterror = question + "答案：" + answer;
+					files.append('/sdcard/Wronganswer.txt', "\n" + texterror);
                     /*checkAndUpdate(question, answer, ClickAnswer);*/
                 }
                 console.log("---------------------------");
@@ -2136,6 +2141,7 @@ function do_contest_answer(depth_option, question1) {
                 answers = answers.replace(/瓜熟.落/g, "瓜熟蒂落");
                 answers = answers.replace(/虎视../g, "虎视眈眈");
                 answers = answers.replace(/进裂/g, "崩裂");
+				answers = answers.replace(/立华/g, "立竿");
                 // try{
                 //     answers = r.replace(answers);
                 // }catch(e){}
@@ -2205,6 +2211,7 @@ function do_contest_answer(depth_option, question1) {
              }
              catch(e){console.error("此题选项异常！！！")}
              console.info('点击选项:' + option + '  原选项：' + last);
+			 
         }
         else{
             console.info('点击选项:' + option);
@@ -2609,6 +2616,7 @@ function zsyAnswer() {
     var count = 2;
     console.info('改变提示框位置');
     console.setPosition(device.width / 4, -device.height / 4);
+	// var qn = 0
     for (var i = 0; i < count; i++) {
         sleep(random_time(delay_time));
         if (text("随机匹配").exists()) {
@@ -2705,8 +2713,38 @@ function zsyAnswer() {
                 console.log('截图坐标为(' + x + ',' + y + '),(' + dx + ',' + dy + ')');
                 break;
             }
-            console.timeEnd('答题');
-            img.recycle();
+			console.timeEnd('答题');
+			img.recycle();
+			var ci = 0;
+			do {
+				if (findColor(captureScreen(), '#f54f75', {
+                    region: [x, y, dx, dy],
+                    threshold: 10,
+                })) {
+					console.error('答案错误');
+					console.error("题目：" + question);
+					files.append('/sdcard/Wronganswer.txt', "\n" + question);
+					console.info('题目已保存到Wronganswer.txt');
+					// var opc = 1;
+					break;
+				}
+				else if (findColor(captureScreen(), '#1ac97c', {
+                    region: [x, y, dx, dy],
+                    threshold: 10,
+                })) {
+					console.info('答案正确');
+					// var opc = 1;
+					break;
+				}
+				else if (ci > cic) {
+					console.info('跳出循环');
+					break;
+				}
+				else {
+					var opc = 0;
+					ci++;
+				}
+			} while (opc < 1);
             do {
                 var point = findColor(captureScreen(), '#555AB6', {
                     region: [x, y, dx, dy],
@@ -2714,7 +2752,7 @@ function zsyAnswer() {
                 });
             } while (!point);
             console.log('等待下一题\n----------');
-            音字 = false;
+			// qn++;
         }
         if (i == 0 && count == 2) {
             sleep(random_time(delay_time));
