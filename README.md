@@ -4,6 +4,8 @@
 
 **使用自己编写的json_to_sql.py转换为sql文件**
 
+本仓库下的QuestionBank.db为study题库（在tikuNet表中）+[XXQG_TiKu](https://github.com/Mondayfirst/XXQG_TiKu)原始版（在tiku表中）
+
 ----
 
 **为了学习而Study**
