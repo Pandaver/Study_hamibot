@@ -1,5 +1,14 @@
 [
   {
+    "name": "QuestionBank_URL",
+    "type": "text",
+    "label": "自定义题库地址",
+    "placeholder": "https://gitee.com/wangwang-code/picture-bed/raw/master/QuestionBank.db",
+    "validation": "required",
+    "validation-name": "题库地址",
+    "help": "一定要是直链！！"
+  },
+  {
     "label": "订阅",
     "type": "select",
     "name": "ssub",

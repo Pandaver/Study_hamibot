@@ -4,7 +4,8 @@ importClass(java.net.HttpURLConnection);
 importClass(java.net.URL);
 importClass(java.io.File);
 importClass(java.io.FileOutputStream);
-var url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/QuestionBank.db';
+var url = hamibot.env.QuestionBank_URL;
+console.info('你填写的题库地址: '+url);
 var path = '/sdcard/QuestionBank.db';
 device.wakeUpIfNeeded(); //点亮屏幕
 var first = true;//记录答题的第一次
