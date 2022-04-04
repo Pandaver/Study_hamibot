@@ -23,7 +23,6 @@
     "name": "init_url",
     "type": "text",
     "label": "自定义题库question地址（题库）",
-    // "placeholder": "https://gitee.com/wangwang-code/picture-bed/raw/master/question",
 	"placeholder": "https://git.yumenaka.net/https://raw.githubusercontent.com/wangwang-code/1/main/question",
     "validation": "required",
     "validation-name": "question（题库）地址",
