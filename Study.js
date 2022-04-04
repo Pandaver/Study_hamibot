@@ -6,6 +6,7 @@ importClass(java.io.File);
 importClass(java.io.FileOutputStream);
 var url = hamibot.env.QuestionBank_URL;
 console.info('你填写的题库地址: '+url);
+var dbd = hamibot.env.dbd;
 var path = '/sdcard/QuestionBank.db';
 device.wakeUpIfNeeded(); //点亮屏幕
 var first = true;//记录答题的第一次
@@ -60,7 +61,9 @@ var question_list = [];
 var init_true = false;
 var downloadDialog = null;
 // var init_url = "https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/question";    
-var init_url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/question';
+// var init_url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/question';
+var init_url = hamibot.env.init_url;
+console.info('你填写的question文件地址: '+init_url);
 var file_tmp = false;
 var tikus = '';
 /**
@@ -193,6 +196,14 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
             files.writeBytes(path, tiku);
         });
     }
+	if (dbd == 'true') {
+	    toastLog('强制更新QuestionBank.db中');
+	    threads.start(function () {
+	        var tiku = http.get(url).body.bytes();
+	        //console.log(tiku)
+	        files.writeBytes(path, tiku);
+	    });
+	}
     launchApp("Hamibot");
     delay(2);
     show_log();
@@ -2502,9 +2513,9 @@ function init(){
         x = null;
     });
 
-    console.info('正在加载题库中.....');
+    console.info('正在加载question文件中.....');
     downloadDialog = dialogs.build({
-        title: "正在加载题库...",
+        title: "正在加载question文件...",
         progress: {
           max: 100,
           showMinMax: true
@@ -2518,11 +2529,11 @@ function init(){
         download.join(1000*60);
         if(!file_tmp){
             download.interrupt();
-            console.error('题库加载超时！，再次加载一次');
+            console.error('question文件加载超时！，再次加载一次');
             startDownload();
         }
         while(!file_tmp){
-            toastLog('等待加载题库!!!');
+            toastLog('等待加载question文件!!!');
             delay(2);
         }
         file_tmp = null;
@@ -2541,18 +2552,18 @@ function init(){
         tikus = null;
         init_true = true;
         if(question_list.length<1000){
-            console.info('题库崩了！！！，等！！！');
+            console.info('question文件崩了！！！，等！！！');
             exit();
         }
     }
     catch(e){
-        console.error('题库获取失败，检查网络连接！！！');
+        console.error('question文件获取失败，检查网络连接！！！');
         exit();
     }
 }
 function startDownload() {
     download = threads.start(function () {
-        toastLog('等待加载题库!!!');
+        toastLog('等待加载question文件!!!');
         try{
             var conn = new URL(init_url).openConnection();
             conn.connect();
@@ -2578,7 +2589,7 @@ function startDownload() {
             file_tmp = true;
         }catch(e){
             console.error(e);
-            console.warn('题库加载失败');
+            console.warn('question文件加载失败');
             question_list = null;
             is.close();
             tikus = null;
