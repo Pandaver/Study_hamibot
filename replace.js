@@ -77,6 +77,7 @@ r.replace = function(answers) {
     answers = answers.replace(/晖红/g, "蹿红");
     answers = answers.replace(/蹄红/g, "蹿红");
     answers = answers.replace(/立华/g, "立竿");
+	 answers = answers.replace(/夏奉/g, "夏季");
     return answers
 };
 
