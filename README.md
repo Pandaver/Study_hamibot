@@ -1,8 +1,10 @@
-**本人技术很菜，只能勉强看懂代码**
+# 我用爱发电，换的是挑三拣四
+
+![image](https://user-images.githubusercontent.com/64469117/161773401-36624c82-1cfb-4bcb-9386-362501caa7a0.png)
 
 **目前主要更新题库（感谢[https://github.com/Mondayfirst/XXQG_TiKu](https://github.com/Mondayfirst/XXQG_TiKu)提供的题库）**
 
-**使用自己编写的json_to_sql.py转换为sql文件**
+**使用自己编写的py转换为所需要的格式**
 
 # 教程在[食用教程](https://github.com/wangwang-code/Study_hamibot/blob/main/%E9%A3%9F%E7%94%A8%E6%95%99%E7%A8%8B.md#%E9%A3%9F%E7%94%A8%E6%95%99%E7%A8%8B)
 
