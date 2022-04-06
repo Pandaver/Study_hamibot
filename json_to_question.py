@@ -4,7 +4,7 @@ import re
 import time
 
 i = 0
-with open('H:\Study_hamibot\QuestionBank_px.json','r',encoding='utf8')as fp:
+with open('H:\Study_hamibot\QuestionBank.json','r',encoding='utf8')as fp:
     json_data = json.load(fp)
     for key, value in json_data.items():
         pie = re.split(r"[\|]", key)

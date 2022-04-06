@@ -3,7 +3,7 @@ import json
 import re
 import time
 
-with open('H:\QuestionBank.json','r',encoding='utf8')as fp:
+with open('H:\Study_hamibot\QuestionBank.json','r',encoding='utf8')as fp:
     json_data = json.load(fp)
     for key, value in json_data.items():
         pie = re.split(r"[\|]", key)
@@ -21,6 +21,6 @@ with open('H:\QuestionBank.json','r',encoding='utf8')as fp:
         str = 'INSERT INTO "tiku" VALUES (' + "'" + key + "'" + ',' + "'" + value + "'" + ", NULL, '" + options + "', '" + time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())) +"');"
 # 睿智
 #        print(str)
-        f = open('H:\QuestionBank.sql','a',encoding='utf8')
+        f = open('H:\Study_hamibot\QuestionBank.sql','a',encoding='utf8')
         f.write('\n' + str)
         f.close()
