@@ -28,7 +28,7 @@ var meiri = hamibot.env.meiri;
 var tiaozhan = hamibot.env.tiaozhan;
 
 if (hamibot.env.cic == "true") {
-	var cic = 2;
+	var cic = 3;
 } else {
 	var cic = 0;
 }
