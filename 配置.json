@@ -4,9 +4,7 @@
     "type": "text",
     "label": "自定义每日每周专项题库地址",
     "placeholder": "https://cdn.jsdelivr.net/gh/wangwang-code/1@main/QuestionBank.db",
-    "validation": "required",
-    "validation-name": "题库地址",
-    "help": "一定要是直链！！"
+    "help": "一定要是直链！！，留空使用默认地址"
   },
   {
     "name": "dbd",
@@ -24,9 +22,7 @@
     "type": "text",
     "label": "自定义题库四人/双人/挑战",
 	"placeholder": "https://cdn.jsdelivr.net/gh/wangwang-code/Study_hamibot@main/question",
-    "validation": "required",
-    "validation-name": "四人/双人/挑战题库地址",
-    "help": "一定要是直链！！"
+    "help": "一定要是直链！！，留空使用默认地址"
   },
   {
     "label": "订阅",

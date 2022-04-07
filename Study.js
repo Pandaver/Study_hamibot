@@ -4,8 +4,14 @@ importClass(java.net.HttpURLConnection);
 importClass(java.net.URL);
 importClass(java.io.File);
 importClass(java.io.FileOutputStream);
-var url = hamibot.env.QuestionBank_URL;
-console.info('每日每周专项题库地址: ' + url);
+if (hamibot.env.QuestionBank_URL == undefined) {
+	var url = 'https://cdn.jsdelivr.net/gh/wangwang-code/1@main/QuestionBank.db';
+	console.info('每日每周专项使用默认题库地址');
+} else {
+	var url = hamibot.env.QuestionBank_URL;
+	console.info('每日每周专项题库地址: ' + url);
+}
+
 var dbd = hamibot.env.dbd;
 var path = '/sdcard/QuestionBank.db';
 device.wakeUpIfNeeded(); //点亮屏幕
@@ -22,7 +28,7 @@ var meiri = hamibot.env.meiri;
 var tiaozhan = hamibot.env.tiaozhan;
 
 if (hamibot.env.cic == "true") {
-	var cic = 3;
+	var cic = 2;
 } else {
 	var cic = 0;
 }
@@ -67,8 +73,13 @@ var init_true = false;
 var downloadDialog = null;
 // var init_url = "https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/question";    
 // var init_url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/question';
-var init_url = hamibot.env.init_url;
-console.info('四人/双人/挑战题库地址: ' + init_url);
+if (hamibot.env.init_url == undefined) {
+	var init_url = 'https://gitee.com/wangwang-code/tiku/raw/main/question';
+	console.info('四人/双人/挑战使用默认题库地址');
+} else {
+	var init_url = hamibot.env.init_url;
+	console.info('四人/双人/挑战题库地址: ' + init_url);
+}
 var file_tmp = false;
 var tikus = '';
 /**
@@ -2730,6 +2741,8 @@ function zsyAnswer() {
 			console.timeEnd('答题');
 			var ci = 0;
 			img.recycle();
+			var cicx = x * 100;
+			console.info(cicx);
 			do {
 				delay(0.01);
 				ci++;
