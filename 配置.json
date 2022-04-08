@@ -127,6 +127,13 @@
     "help": "说明：0ms最快，越大越慢--(文字识别速度影响最大)"
   },
   {
+    "name": "pos_sleep",
+    "type": "number",
+    "label": "四人/双人发生POS延迟点击（防卡黄）",
+    "validation": "required",
+    "help": "说明：单位：秒，POS:题库中没搜到答案"
+  },
+  {
     "name": "select_01",
     "type": "select",
     "label": "文字识别(OCR)类型选择",

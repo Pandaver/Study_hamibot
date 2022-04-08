@@ -28,7 +28,7 @@ var meiri = hamibot.env.meiri;
 var tiaozhan = hamibot.env.tiaozhan;
 
 if (hamibot.env.cic == "true") {
-	var cic = 3;
+	var cic = 2;
 } else {
 	var cic = 0;
 }
@@ -44,6 +44,7 @@ var 乱序 = 'a';
 // var 随机 = hamibot.env.suiji;
 
 var 延迟时间 = hamibot.env.delay_s * 1;
+var pos_sleep = hamibot.env.pos_sleep * 1;
 if (!延迟时间 || 延迟时间 < 0) 延迟时间 = 0;
 var stronger = hamibot.env.stronger; //每日答题增强模式
 var {
@@ -212,7 +213,7 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 		});
 	}
 	if (dbd == 'true') {
-		toastLog('强制更新每日每周专项中');
+		toastLog('强制更新每日每周专项题库中');
 		threads.start(function() {
 			var tiku = http.get(url).body.bytes();
 			//console.log(tiku)
@@ -1864,12 +1865,13 @@ function challengeQuestionLoop(conNum) {
 			console.error("答案获取失败!");
 			return;
 		} //20201217添加 极低概率下，答题数足够，下一题随机点击，碰到字形题
-		if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
+		//20220408去除
+/* 		if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
 			// 选择第一个
 			console.log((conNum + 1).toString() + ".直接选第一个!!!");
 			className('android.widget.RadioButton').depth(28).findOne().click();
 			return;
-		}
+		} */
 		console.log((conNum + 1).toString() + ".随机点击题目：" + question);
 		delay(random(0.5, 1)); //随机延时0.5-1秒
 		listArray[i].child(0).click(); //随意点击一个答案
@@ -2200,10 +2202,11 @@ function do_contest_answer(depth_option, question1) {
 		option = question_list[pos][1];
 		answer = question_list[pos][2];
 	} else {
-		console.error('没搜到答案,题目异常：\n“' + old_question + '”');
-		console.info('此题pos = ' + pos + ',s=' + s);
-		files.append('/sdcard/Wronganswer.txt', "\n" + old_question);
-		console.info('题目已保存到Wronganswer.txt');
+		console.error('没搜到答案,题目异常：\n“' + old_question + '”，已保存到pos_Wronganswer.txt');
+		files.append('/sdcard/pos_Wronganswer.txt', "\n" + old_question);
+		console.info('此题pos = ' + pos + ',s=' + s + '  等待1秒再答');
+		// sleep(1000);
+		sleep(pos_sleep);
 	}
 	if (option[0] >= 'A' && option[0] <= 'D') {
 		var ans = answer.split('	')[option[0].charCodeAt(0) - 65];
@@ -2741,33 +2744,58 @@ function zsyAnswer() {
 			console.timeEnd('答题');
 			var ci = 0;
 			img.recycle();
-			var cicx = x * 100;
-			console.info(cicx);
-			do {
-				delay(0.01);
-				ci++;
+			var cicx = x * 2;
+			delay(0.125); //卡一帧
+			// 根据选项颜色判断是否答错
+			/* 			do {
+							delay(0.01);
+							ci++;
+							if (findColor(captureScreen(), '#f54f75', {
+									region: [x, y, dx, dy],
+									threshold: 10,
+								})) {
+								console.error('答案错误');
+								console.error("题目：" + question);
+								files.append('/sdcard/Wronganswer.txt', "\n" + question);
+								console.info('题目已保存到Wronganswer.txt');
+								// var opc = 1;
+								break;
+							} else if (findColor(captureScreen(), '#1ac97c', {
+									region: [x, y, dx, dy],
+									threshold: 10,
+								})) {
+								console.info('答案正确');
+								// var opc = 1;
+								break;
+							} else {
+								console.log('已循环' + ci + "次");
+							}
+						} while (ci < cic); */
+			for (ci = 0; ci < cic; ci++) {
+				if (i = 1) {
+					delay(0.15);
+				}
 				if (findColor(captureScreen(), '#f54f75', {
-						region: [x, y, dx, dy],
-						threshold: 10,
+						region: [cicx, y, dx, dy],
+						threshold: 20,
 					})) {
 					console.error('答案错误');
 					console.error("题目：" + question);
 					files.append('/sdcard/Wronganswer.txt', "\n" + question);
 					console.info('题目已保存到Wronganswer.txt');
-					// var opc = 1;
 					break;
 				} else if (findColor(captureScreen(), '#1ac97c', {
-						region: [x, y, dx, dy],
-						threshold: 10,
+						region: [cicx, y, dx, dy],
+						threshold: 20,
 					})) {
 					console.info('答案正确');
-					// var opc = 1;
 					break;
 				} else {
-					console.log('已循环' + ci + "次");
+					console.log('未找到选项颜色');
+					sleep(450);
 				}
-			} while (ci < cic);
-			// }
+			}
+			img.recycle();
 			do {
 				var point = findColor(captureScreen(), '#555AB6', {
 					region: [x, y, dx, dy],
