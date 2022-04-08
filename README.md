@@ -1,6 +1,4 @@
-# 我用爱发电，换的是挑三拣四
-
-![image](https://user-images.githubusercontent.com/64469117/161773401-36624c82-1cfb-4bcb-9386-362501caa7a0.png)
+# 目前将进入不活跃状态
 
 **目前主要更新题库（感谢[https://github.com/Mondayfirst/XXQG_TiKu](https://github.com/Mondayfirst/XXQG_TiKu)提供的题库）**
 
