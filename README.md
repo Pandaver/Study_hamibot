@@ -1,5 +1,7 @@
 # 目前将进入不活跃状态
 
+**本修改版目的是解放双手，如非此目的，出门右转**
+
 **目前主要更新题库（感谢[https://github.com/Mondayfirst/XXQG_TiKu](https://github.com/Mondayfirst/XXQG_TiKu)提供的题库）**
 
 **使用自己编写的py转换为所需要的格式**
@@ -36,7 +38,8 @@
      3. qg 2.33.0版本及以下
      4. Study视频学习选择新百灵视频  四人模式选择百度/华为OCR或第三方OCR插件
   ```
-- [电报交流群](https://t.me/+A4KV10N9_gJmZTE1)
+- [电报交流群（十二）](https://t.me/+A4KV10N9_gJmZTE1)
+- [电报交流群（ww修改）](https://t.me/+yia2ylnVlPtkODE1)
 - **一张图片、一句话，并不能解决问题。**
 - **完整日志内容才能解决问题**
 
