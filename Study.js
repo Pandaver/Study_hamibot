@@ -27,12 +27,7 @@ var video = hamibot.env.video;
 var meiri = hamibot.env.meiri;
 var tiaozhan = hamibot.env.tiaozhan;
 
-if (hamibot.env.cic == "true") {
-	var cic = 2;
-} else {
-	var cic = 0;
-}
-
+var cic = hamibot.env.cic;
 
 var choose = hamibot.env.select_01;
 
@@ -222,6 +217,10 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 	}
 	launchApp("Hamibot");
 	delay(2);
+	if (cic == "true") {
+		console.warn('警告：你启用了四人双人判断答案正确与否功能，该功能仍处于beta阶段，可能发生臆想不到的问题！！！');
+		sleep(5000);
+	}
 	show_log();
 	while (!showlog) {
 		sleep(1000);
@@ -1866,12 +1865,12 @@ function challengeQuestionLoop(conNum) {
 			return;
 		} //20201217添加 极低概率下，答题数足够，下一题随机点击，碰到字形题
 		//20220408去除
-/* 		if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
-			// 选择第一个
-			console.log((conNum + 1).toString() + ".直接选第一个!!!");
-			className('android.widget.RadioButton').depth(28).findOne().click();
-			return;
-		} */
+		/* 		if (question == "选择正确的读音" || question == "选择词语的正确词形" || question == "下列词形正确的是") {
+					// 选择第一个
+					console.log((conNum + 1).toString() + ".直接选第一个!!!");
+					className('android.widget.RadioButton').depth(28).findOne().click();
+					return;
+				} */
 		console.log((conNum + 1).toString() + ".随机点击题目：" + question);
 		delay(random(0.5, 1)); //随机延时0.5-1秒
 		listArray[i].child(0).click(); //随意点击一个答案
@@ -2742,67 +2741,87 @@ function zsyAnswer() {
 			}
 			// var cicx = x*100
 			console.timeEnd('答题');
-			var ci = 0;
+			// var ci = 0;
 			img.recycle();
-			var cicx = x * 2;
-			delay(0.125); //卡一帧
+			// var cicx = x * 2;
+			//			delay(0.125); //卡一帧
 			// 根据选项颜色判断是否答错
-			/* 			do {
-							delay(0.01);
-							ci++;
+			if (cic == "true") {
+				do {
+					var pointok = findColor(captureScreen(), '#1ac97c', {
+						region: [x, y, dx, dy],
+						threshold: 20,
+					});
+					if (pointok) {
+						break; //跳出循环再进行下一步
+					}
+					var point = findColor(captureScreen(), '#555AB6', {
+						region: [x, y, dx, dy],
+						threshold: 10,
+					}); //防卡
+					if (point) {
+						break;
+					}
+					var pointokno = findColor(captureScreen(), '#f54f75', {
+						region: [x, y, dx, dy],
+						threshold: 20,
+					});
+					if (pointokno) {
+						break; //跳出循环再进行下一步
+					}
+				} while (true);
+			} else {
+				do {
+					var point = findColor(captureScreen(), '#555AB6', {
+						region: [x, y, dx, dy],
+						threshold: 10,
+					});
+				} while (!point);
+			}
+			if (pointok && cic == "true") {
+				console.info('答案正确');
+				do { // 防同一题进行两次OCR和点击选项
+					var point = findColor(captureScreen(), '#555AB6', {
+						region: [x, y, dx, dy],
+						threshold: 10,
+					});
+				} while (!point);
+			}
+			if (pointokno && cic == "true") {
+				console.error('答案错误');
+				files.append('/sdcard/Wronganswer.txt', "\n" + question);
+				do { // 防同一题进行两次OCR和点击选项
+					var point = findColor(captureScreen(), '#555AB6', {
+						region: [x, y, dx, dy],
+						threshold: 10,
+					});
+				} while (!point);
+			}
+			console.log('等待下一题\n----------');
+			/* 			for (ci = 0; ci < cic; ci++) {
+							if (i = 1) {
+								delay(0.15);
+							}
 							if (findColor(captureScreen(), '#f54f75', {
-									region: [x, y, dx, dy],
-									threshold: 10,
+									region: [cicx, y, dx, dy],
+									threshold: 20,
 								})) {
 								console.error('答案错误');
 								console.error("题目：" + question);
 								files.append('/sdcard/Wronganswer.txt', "\n" + question);
 								console.info('题目已保存到Wronganswer.txt');
-								// var opc = 1;
 								break;
 							} else if (findColor(captureScreen(), '#1ac97c', {
-									region: [x, y, dx, dy],
-									threshold: 10,
+									region: [cicx, y, dx, dy],
+									threshold: 20,
 								})) {
 								console.info('答案正确');
-								// var opc = 1;
 								break;
 							} else {
-								console.log('已循环' + ci + "次");
+								console.log('未找到选项颜色');
+								sleep(450);
 							}
-						} while (ci < cic); */
-			for (ci = 0; ci < cic; ci++) {
-				if (i = 1) {
-					delay(0.15);
-				}
-				if (findColor(captureScreen(), '#f54f75', {
-						region: [cicx, y, dx, dy],
-						threshold: 20,
-					})) {
-					console.error('答案错误');
-					console.error("题目：" + question);
-					files.append('/sdcard/Wronganswer.txt', "\n" + question);
-					console.info('题目已保存到Wronganswer.txt');
-					break;
-				} else if (findColor(captureScreen(), '#1ac97c', {
-						region: [cicx, y, dx, dy],
-						threshold: 20,
-					})) {
-					console.info('答案正确');
-					break;
-				} else {
-					console.log('未找到选项颜色');
-					sleep(450);
-				}
-			}
-			img.recycle();
-			do {
-				var point = findColor(captureScreen(), '#555AB6', {
-					region: [x, y, dx, dy],
-					threshold: 10,
-				});
-			} while (!point);
-			console.log('等待下一题\n----------');
+						} */
 		}
 		if (i == 0 && count == 2) {
 			sleep(random_time(delay_time));
