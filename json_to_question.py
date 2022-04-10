@@ -19,12 +19,13 @@ with open('H:\Study_hamibot\QuestionBank.json','r',encoding='utf8')as fp:
             options = 'D'
         else:
             options = 'NULL'
+        topic = pie[0].replace(" ","")
         if len(pie) == 3:
-            strt = options + " " + pie[0] + " " + pie[1] + "	" + pie[2]
+            strt = options + " " + topic + " " + pie[1] + "	" + pie[2]
         elif len(pie) == 4:
-            strt = options + " " + pie[0] + " " + pie[1] + "	" + pie[2] + "	" + pie[3]
+            strt = options + " " + topic + " " + pie[1] + "	" + pie[2] + "	" + pie[3]
         elif len(pie) == 5:
-            strt = options + " " + pie[0] + " " + pie[1] + "	" + pie[2] + "	" + pie[3] + "	" + pie[4]
+            strt = options + " " + topic + " " + pie[1] + "	" + pie[2] + "	" + pie[3] + "	" + pie[4]
 #            strt = 'INSERT INTO "tiku" VALUES (' + "'" + pie[0]+pie[1]+'、'+pie[2] + "'" + ',' + "'" + value + "'" + ", NULL, '" + options + "', '" + time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())) +"');"
 #        if (pie[4] == )
 #        strt = options + " " + pie[0] + " " + pie[1] + "	"
