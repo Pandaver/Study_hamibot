@@ -2095,11 +2095,11 @@ var 音字 = false;
 
 function do_contest_answer(depth_option, question1) {
 	// console.time('搜题');
+	question1 = question1.split('来源:')[0]; //去除来源
+	question1 = question1.split('来源：')[0]; //去除来源
 	question1 = question1.replace(/'/g, "");
 	question1 = question1.replace(/"/g, "");
 	old_question = JSON.parse(JSON.stringify(question1));
-	question1 = question1.split('来源:')[0]; //去除来源
-	question1 = question1.split('来源：')[0]; //去除来源
 	question = question1.split('A.')[0];
 	// question = question.split('（.*）')[0];
 	reg = /下列..正确的是.*/g;
@@ -2195,7 +2195,10 @@ function do_contest_answer(depth_option, question1) {
 			similars = s;
 			pos = i;
 		}
-		if (s == 999) break;
+		if (s == 999) {
+			console.error('异常：s等于999');
+			break;
+		}
 	}
 	if (pos != -1) {
 		option = question_list[pos][1];
@@ -2203,9 +2206,8 @@ function do_contest_answer(depth_option, question1) {
 	} else {
 		console.error('没搜到答案,题目异常：\n“' + old_question + '”，已保存到pos_Wronganswer.txt');
 		files.append('/sdcard/pos_Wronganswer.txt', "\n" + old_question);
-		console.info('此题pos = ' + pos + ',s=' + s + '  等待1秒再答');
-		// sleep(1000);
-		sleep(pos_sleep);
+		console.info('此题pos = ' + pos + ',s=' + s + '  等待' + pos_sleep + '秒再答');
+		sleep(pos_sleep * 1000);
 	}
 	if (option[0] >= 'A' && option[0] <= 'D') {
 		var ans = answer.split('	')[option[0].charCodeAt(0) - 65];
@@ -2677,13 +2679,19 @@ function zsyAnswer() {
 		}
 		className("ListView").waitFor();
 		var range = className("ListView").findOnce().parent().bounds();
+		console.info(range);
 		var x = range.left + 20,
 			dx = range.right - x - 20;
 		var y = range.top,
 			dy = device.height - 300 - y;
 		console.log('坐标获取完成');
+		// 给
+		var cix = range.left,
+			cidx = dx / 2;
+		var ciy = range.top,
+			cidy = device.height - 200 - ciy;
+//		console.log(cix + "，" + ciy + "，" + cidx + "，" + cidy);
 		while (!text('继续挑战').exists()) {
-
 			do {
 				img = captureScreen();
 				var point = findColor(img, '#1B1F25', {
@@ -2739,36 +2747,29 @@ function zsyAnswer() {
 				console.log('截图坐标为(' + x + ',' + y + '),(' + dx + ',' + dy + ')');
 				break;
 			}
-			// var cicx = x*100
 			console.timeEnd('答题');
 			// var ci = 0;
 			img.recycle();
-			// var cicx = x * 2;
 			//			delay(0.125); //卡一帧
 			// 根据选项颜色判断是否答错
 			if (cic == "true") {
 				do {
-					var pointok = findColor(captureScreen(), '#1ac97c', {
-						region: [x, y, dx, dy],
-						threshold: 20,
-					});
-					if (pointok) {
-						break; //跳出循环再进行下一步
-					}
+					if (text("继续挑战").exists()) break; //如果发现答题结束就退出
 					var point = findColor(captureScreen(), '#555AB6', {
 						region: [x, y, dx, dy],
-						threshold: 10,
+						threshold: 30,
 					}); //防卡
-					if (point) {
-						break;
-					}
-					var pointokno = findColor(captureScreen(), '#f54f75', {
-						region: [x, y, dx, dy],
-						threshold: 20,
+					if (point) break;
+/* 					var pointok = findColor(captureScreen(), '#1ac97c', {
+						region: [cix, ciy, cidx, cidy],
+						threshold: 13,
 					});
-					if (pointokno) {
-						break; //跳出循环再进行下一步
-					}
+					if (pointok) break; //跳出循环再进行下一步 */
+					var pointokno = findColor(captureScreen(), '#f54f75', {
+						region: [cix, ciy, cidx, cidy],
+						threshold: 5,
+					});
+					if (pointokno) break; //跳出循环再进行下一步
 				} while (true);
 			} else {
 				do {
@@ -2778,7 +2779,7 @@ function zsyAnswer() {
 					});
 				} while (!point);
 			}
-			if (pointok && cic == "true") {
+/* 			if (pointok && cic == "true") {
 				console.info('答案正确');
 				do { // 防同一题进行两次OCR和点击选项
 					var point = findColor(captureScreen(), '#555AB6', {
@@ -2786,7 +2787,7 @@ function zsyAnswer() {
 						threshold: 10,
 					});
 				} while (!point);
-			}
+			} */
 			if (pointokno && cic == "true") {
 				console.error('答案错误');
 				files.append('/sdcard/Wronganswer.txt', "\n" + question);
