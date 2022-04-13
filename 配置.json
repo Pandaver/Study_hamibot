@@ -138,10 +138,10 @@
     "type": "select",
     "label": "文字识别(OCR)类型选择",
     "options": {
-      "c": "hamibot内置OCR->推荐",
+      "b": "第三方OCR插件,需要安装第三方插件->推荐",
+      "c": "hamibot内置OCR",
       "a": "华为OCR接口,需要填入以下关于华为的内容",
-      "d": "百度OCR接口,需要填入以下关于百度的内容",
-      "b": "第三方OCR插件,需要安装第三方插件"
+      "d": "百度OCR接口,需要填入以下关于百度的内容"
     },
     "validation": "required",
     "help": "帮助：选择适合自己手机的文字识别，建议都试一遍"
@@ -219,6 +219,7 @@
     "type": "number",
     "label": "文章学习时间自定义---每篇文章的秒数",
     "validation": "required",
+    "placeholder": "61",
     "help": " "
   },
   {
@@ -226,6 +227,7 @@
     "type": "number",
     "label": "视频学习时间自定义---每个视频的秒数",
     "validation": "required",
+    "placeholder": "6",
     "help": " "
   },
   {
@@ -257,5 +259,11 @@
     "type": "text",
     "label": "push+ 消息推送",
     "help": "注：有需要的自行填写push+的Token，否则留空即可"
+  },
+  {
+    "name": "debug_ck",
+    "type": "checkbox",
+    "label": "详细日志",
+    "help": "会输出更多的日志（四人双人）"
   }
 ]

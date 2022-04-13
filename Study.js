@@ -20,6 +20,8 @@ var r; // 替换用；
 var meizhou_txt = hamibot.env.checkbox_02;
 var zhuanxiang_txt = hamibot.env.checkbox_01;
 var siren = hamibot.env.checkbox_03;
+var debug = hamibot.env.debug_ck;
+if (debug) console.info('已开启详细日志模式');
 var shuangren = hamibot.env.shuangren;
 
 var articles = hamibot.env.article;
@@ -219,7 +221,7 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 	delay(2);
 	if (cic == "true") {
 		console.warn('警告：你启用了四人双人判断答案正确与否功能，该功能仍处于beta阶段，可能发生臆想不到的问题！！！');
-		sleep(3000);
+		delay(3);
 	}
 	show_log();
 	while (!showlog) {
@@ -285,7 +287,7 @@ function show_log() { // 使用须知
 				show_log = true;
 				return;
 			}
-			console.info('查看使用须知，20s后自动关闭');
+			console.info('查看使用须知，15s后自动关闭');
 			var d = dialogs.build({
 				title: "使用须知",
 				content: text,
@@ -297,7 +299,7 @@ function show_log() { // 使用须知
 				text = null;
 				showlog = true;
 			}).show();
-			sleep(20000);
+			sleep(15000);
 			if (!showlog) {
 				d.dismiss();
 				// setClip(text)
@@ -896,35 +898,36 @@ function localChannel() {
 	while (!desc("工作").exists()); //等待加载出主页
 	desc("工作").click();
 	sleep(random_time(delay_time));
-	if (className("android.widget.LinearLayout").exists()) {
-		console.log('去本地频道');
-		swipe(device.width - 200, device.height / 2, 200, device.height / 2, 300)
-		sleep(random_time(delay_time));
-		swipe(device.width - 200, device.height / 2, 200, device.height / 2, 300);
-		sleep(random_time(delay_time));
-		swipe(device.width - 200, device.height / 2, 200, device.height / 2, 300);
-		sleep(random_time(delay_time));
-		console.log("点击: 本地频道");
-		className("android.widget.LinearLayout").clickable(true).depth(26).findOne().click();
-		sleep(random_time(delay_time));
+
+	/* 	if (className("android.widget.LinearLayout").exists()) {
+			console.log('去本地频道');
+			swipe(device.width - 200, device.height / 2, 200, device.height / 2, 300)
+			sleep(random_time(delay_time));
+			swipe(device.width - 200, device.height / 2, 200, device.height / 2, 300);
+			sleep(random_time(delay_time));
+			swipe(device.width - 200, device.height / 2, 200, device.height / 2, 300);
+			sleep(random_time(delay_time));
+			console.log("点击: 本地频道");
+			className("android.widget.LinearLayout").clickable(true).depth(26).findOne().click();
+			sleep(random_time(delay_time));
+			back();
+		} else {
+			console.log("请手动点击本地频道！");
+		} */
+	console.log("点击本地频道");
+	if (text("思想").exists()) {
+		text("思想").findOne().parent().parent().child(3).click();
+		delay(3);
+		className("android.support.v7.widget.RecyclerView").findOne().child(2).click();
+		delay(2);
+		console.log("返回主界面");
 		back();
+		launchApp("学习强国");
+		delay(1);
+		text("思想").findOne().parent().parent().child(0).click();
 	} else {
 		console.log("请手动点击本地频道！");
 	}
-	//	console.log("点击本地频道");
-	// if (text("新思想").exists()) {
-	// 	text("新思想").findOne().parent().parent().child(3).click();
-	// 	delay(3);
-	// 	className("android.support.v7.widget.RecyclerView").findOne().child(2).click();
-	// 	delay(2);
-	// 	console.log("返回主界面");
-	// 	back();
-	// 	launchApp("学习强国");
-	// 	delay(1);
-	// 	text("新思想").findOne().parent().parent().child(0).click();
-	// } else {
-	// 	console.log("请手动点击本地频道！");
-	// }
 
 }
 
@@ -932,7 +935,7 @@ function localChannel() {
  * @description: 获取积分
  * @param: null
  * @return: null
- */
+ **/
 function getScores(i) {
 	while (!desc("工作").exists()); //等待加载出主页
 	console.log("正在获取积分...");
@@ -1058,6 +1061,7 @@ function stopRadio() {
 	delay(1);
 	click("听广播");
 	delay(2);
+	back_table();
 	while (!(textContains("正在收听").exists() || textContains("最近收听").exists() || textContains("推荐收听").exists())) {
 		log("等待加载");
 		delay(2)
@@ -2125,7 +2129,7 @@ function do_contest_answer(depth_option, question1) {
 	old_old_question = question1
 	old_question = JSON.parse(JSON.stringify(question1)); //处理question1的数据
 	question = question1.split('A.')[0];
-	console.info('处理后的题目：' + question);
+	if (debug) console.info('处理后的题目：' + question);
 	// question = question.split('（.*）')[0];
 	reg = /下列..正确的是.*/g;
 	reb = /选择词语的正确.*/g;
@@ -2134,16 +2138,16 @@ function do_contest_answer(depth_option, question1) {
 	rex = /劳动行政部门自收到集体合同文本之日起.*/g;
 	if (question.length < 3) {
 		// 如果处理过的题目长度小于未处理过的题题目的一半，则使用未被处理过的题目
-		console.error('处理后的题目存在异常！！！');
+		if (debug) console.error('处理后的题目存在异常！！！');
 		var question = old_old_question;
-		console.log('使用old_old_question！\n' + old_old_question);
+		if (debug) console.log('使用old_old_question！\n' + old_old_question);
 	}
 	if (reb.test(question) || rea.test(question)) {
 		var ocrer = true;
-		console.info('发现选择正确/词语类题目');
+		if (debug) console.info('发现选择正确/词语类题目');
 		//		var question = old_old_question;
 		//		console.log('使用old_old_question！\n' + old_old_question);
-		console.log('识别一次选项');
+		if (debug) console.log('识别一次选项');
 		while (true) {
 			if (className('android.widget.RadioButton').depth(32).exists()) {
 				break;
@@ -2169,6 +2173,7 @@ function do_contest_answer(depth_option, question1) {
 			console.info('选项获取失败');
 		}
 		var question = old_old_question + old_question;
+		if (debug) console.log('合并后：' + question);
 	}
 	var option = 'N';
 	var answer = 'N';
@@ -2293,7 +2298,7 @@ function do_contest_answer(depth_option, question1) {
 		answer = question_list[pos][2];
 	} else {
 		console.error('没搜到答案,题目异常：\n“' + old_question + '”，已保存到pos_Wronganswer.txt');
-		console.log('详细日志：\n' + '\n question: \n' + question + '\n ')
+		if (debug) console.log('详细日志：\n' + '\n question: \n' + question + '\n ')
 		files.append('/sdcard/pos_Wronganswer.txt', "\n" + old_question);
 		console.info('此题pos = ' + pos + ',s=' + s + '  等待' + pos_sleep + '秒再答');
 		sleep(pos_sleep * 1000);
@@ -2748,7 +2753,7 @@ function zsyAnswer() {
 	} else baidu_ocr_api(img, token);
 	var count = 2;
 	console.info('改变提示框位置');
-	console.setPosition(device.width / 4, -device.height / 4);
+	console.setPosition(device.width / 10, -device.height / 8);
 	// var qn = 0
 	for (var i = 0; i < count; i++) {
 		sleep(random_time(delay_time));
@@ -2791,7 +2796,7 @@ function zsyAnswer() {
 			cidx = dx / 2;
 		var ciy = range.top,
 			cidy = device.height - 200 - ciy;
-		//		console.log(cix + "，" + ciy + "，" + cidx + "，" + cidy);
+		//if (debug) console.log(cix + "，" + ciy + "，" + cidx + "，" + cidy);
 		while (!text('继续挑战').exists()) {
 			do {
 				img = captureScreen();
@@ -2886,17 +2891,7 @@ function zsyAnswer() {
 					});
 				} while (!point);
 			}
-			// 冗余
-			/* 			if (pointok && cic == "true") {
-							console.info('答案正确');
-							do { // 防同一题进行两次OCR和点击选项
-								var point = findColor(captureScreen(), '#555AB6', {
-									region: [x, y, dx, dy],
-									threshold: 10,
-								});
-							} while (!point);
-						} */
-			if (pointokno && cic == "true" && !pointok) {
+			if (pointokno && cic == "true" && !pointok && !text("我要分享").exists() && !text("继续挑战").exists()) {
 				console.error('答案错误');
 				files.append('/sdcard/Wronganswer.txt', "\n" + question);
 				do {
@@ -2907,7 +2902,7 @@ function zsyAnswer() {
 					});
 				} while (!point);
 			}
-			if (!pointokno && cic == "true" && pointok) {
+			if (!pointokno && cic == "true" && pointok && !text("我要分享").exists() && !text("继续挑战").exists()) {
 				do {
 					// 防止上一题没有消失就开始等待
 					var point = findColor(captureScreen(), '#555AB6', {
@@ -2917,31 +2912,6 @@ function zsyAnswer() {
 				} while (!point);
 			}
 			console.log('等待下一题\n----------');
-			// 冗余
-			/* 			for (ci = 0; ci < cic; ci++) {
-							if (i = 1) {
-								delay(0.15);
-							}
-							if (findColor(captureScreen(), '#f54f75', {
-									region: [cicx, y, dx, dy],
-									threshold: 20,
-								})) {
-								console.error('答案错误');
-								console.error("题目：" + question);
-								files.append('/sdcard/Wronganswer.txt', "\n" + question);
-								console.info('题目已保存到Wronganswer.txt');
-								break;
-							} else if (findColor(captureScreen(), '#1ac97c', {
-									region: [cicx, y, dx, dy],
-									threshold: 20,
-								})) {
-								console.info('答案正确');
-								break;
-							} else {
-								console.log('未找到选项颜色');
-								sleep(450);
-							}
-						} */
 		}
 		// 四人
 		if (i == 0 && count == 2) {
@@ -3310,8 +3280,8 @@ function 视频学习() {
 		else if (video == 'a')
 			video_news(x); //电视台
 		else new_bailing_video(x); // 新百灵
-		console.info("等待五秒，然后确认视频是否已满分。");
-		delay(5);
+		console.info("等待3秒，然后确认视频是否已满分。");
+		delay(3);
 		getScores(2);
 		diandian();
 		x++;
@@ -3323,8 +3293,8 @@ function 视频学习() {
 }
 
 function 本地() {
-		if (myScores['本地频道'] != 1) {
-//	if (true) {
+	if (myScores['本地频道'] != 1) {
+		//	if (true) {
 		console.info('开始本地频道');
 		if (text("排行榜").exists()) {
 			delay(0.5);
@@ -3407,8 +3377,8 @@ function 文章和广播() {
 	while ((aCount != 0 || 点点通['有效浏览']) && articles == true) {
 		aTime = hamibot.env.time1;
 		articleStudy(x); //学习文章，包含点赞、分享和评论
-		console.info("等待五秒，然后确认文章是否已满分。");
-		delay(5);
+		console.info("等待3秒，然后确认文章是否已满分。");
+		delay(3);
 		getScores(1);
 		diandian();
 		x++;
