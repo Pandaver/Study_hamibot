@@ -2118,9 +2118,6 @@ var 音字 = false;
 */
 function do_contest_answer(depth_option, question1) {
 	// console.time('搜题');
-	question1 = question1.split('来源:')[0]; //去除来源
-	question1 = question1.split('来源：')[0]; //去除来源
-	question1 = question1.split('推荐')[0]; //去除推荐
 	question1 = question1.replace(/先择词语/g, "选择词语");
 	question1 = question1.replace(/'/g, ""); // 处理一些标点符号
 	question1 = question1.replace(/"/g, "");
@@ -2128,6 +2125,9 @@ function do_contest_answer(depth_option, question1) {
 	question1 = question1.replace(/”/g, "");
 	old_old_question = question1
 	old_question = JSON.parse(JSON.stringify(question1)); //处理question1的数据
+	question1 = question1.split('来源:')[0]; //去除来源
+	question1 = question1.split('来源：')[0]; //去除来源
+	question1 = question1.split('推荐')[0]; //去除推荐
 	question = question1.split('A.')[0];
 	if (debug) console.info('处理后的题目：' + question);
 	// question = question.split('（.*）')[0];
@@ -2277,21 +2277,6 @@ function do_contest_answer(depth_option, question1) {
 			break;
 		}
 	}
-	/* 	if (pos == -1) {
-			console.info('pos等于-1!');
-			console.log('question1: ' + question1);
-			for (var i = 0; i < question_list.length; i++) {
-				// 搜题，
-				// question answer q flag
-				// 丢进去跟题库比较相似
-				var spos = similarity_pos(question_list[i][0], question_list[i][2], question1);
-				if (spos > similars) {
-					// 如果相似度大于0（题库中找到了）
-					similars = spos;
-					pos = i;
-				}
-			}
-		} */
 	if (pos != -1) {
 		// 题库中匹配到题目
 		option = question_list[pos][1];
@@ -2327,7 +2312,7 @@ function do_contest_answer(depth_option, question1) {
 				} else old_question = baidu_ocr_api(img, token);
 				// images.save(img, "/sdcard/选项"+xn+".png", "png", 50);
 				// xn++;
-				console.log('选项：' + old_question);
+				// console.log('选项：' + old_question);
 			} catch (e) {
 				console.error(e);
 				console.info('选项获取失败');
@@ -2335,6 +2320,7 @@ function do_contest_answer(depth_option, question1) {
 		}
 		if (乱序 == 'a') {
 			try {
+				//				console.log('选项：' + old_question);
 				option = click_by_answer(ans, old_question);
 				if (!option) option = last;
 			} catch (e) {
@@ -2395,7 +2381,7 @@ function click_by_answer(ans, question) {
 	// question = question.split('A.');
 	question = question.replace(/c\./g, "C.");
 	question = question.replace(/，/g, ".");
-
+	console.log('选项：' + old_question);
 	var sum = 0;
 	for (var i = 0; i < question.length; i++) {
 		if (question[i] >= 'A' && question[i] <= 'D') {
@@ -2724,6 +2710,7 @@ function startDownload() {
 		}
 	})
 }
+
 /**
  * @description: 四人赛
  * @param: null
@@ -2792,7 +2779,7 @@ function zsyAnswer() {
 			dy = device.height - 300 - y;
 		console.log('坐标获取完成');
 		// 给颜色判断划区域
-		var cix = range.left,
+		var cix = range.left + 35,
 			cidx = dx / 2;
 		var ciy = range.top,
 			cidy = device.height - 200 - ciy;
@@ -2862,26 +2849,31 @@ function zsyAnswer() {
 				do {
 					if (text("继续挑战").exists()) break; //如果发现答题结束就退出
 					if (text("我要分享").exists()) break; //如果发现答题结束就退出
-					if (findColor(captureScreen(), '#555AB6', {
-							region: [x, y, dx, dy],
-							threshold: 10,
-						})) break; ///防卡
-					if (findColor(captureScreen(), '#1ac97c', {
-							region: [cix, ciy, cidx, cidy],
-							threshold: 13,
-						})) {
-						var pointok = true;
+					var point = findColor(captureScreen(), '#555AB6', {
+						region: [x, y, dx, dy],
+						threshold: 30,
+					}); //防卡
+					if (point) break;
+					/* 					var pointok = findColor(captureScreen(), '#1ac97c', {
+											region: [cix, ciy, cidx, cidy],
+											threshold: 13,
+										});
+										if (pointok) break; //跳出循环再进行下一步 */
+					var pointokno = findColor(captureScreen(), '#f54f75', {
+						region: [cix, ciy, cidx, cidy],
+						threshold: 5,
+					});
+					if (pointokno && !text("继续挑战").exists() && !text("我要分享").exists()) {
+						console.error('答案错误');
+						files.append('/sdcard/Wronganswer.txt', "\n" + question);
+						do { // 防同一题进行两次OCR和点击选项
+							var point = findColor(captureScreen(), '#555AB6', {
+								region: [x, y, dx, dy],
+								threshold: 10,
+							});
+						} while (!point);
 						break;
-					}
-					//跳出循环再进行下一步
-					if (findColor(captureScreen(), '#f54f75', {
-							region: [cix, ciy, cidx, cidy],
-							threshold: 5,
-						})) {
-						var pointokno = true;
-						break;
-					}
-					//跳出循环再进行下一步
+					} //跳出循环再进行下一步
 				} while (true);
 			} else {
 				do {
@@ -2891,26 +2883,25 @@ function zsyAnswer() {
 					});
 				} while (!point);
 			}
-			if (pointokno && cic == "true" && !pointok && !text("我要分享").exists() && !text("继续挑战").exists()) {
-				console.error('答案错误');
-				files.append('/sdcard/Wronganswer.txt', "\n" + question);
-				do {
-					// 防止上一题没有消失就开始等待
-					var point = findColor(captureScreen(), '#555AB6', {
-						region: [x, y, dx, dy],
-						threshold: 10,
-					});
-				} while (!point);
-			}
-			if (!pointokno && cic == "true" && pointok && !text("我要分享").exists() && !text("继续挑战").exists()) {
-				do {
-					// 防止上一题没有消失就开始等待
-					var point = findColor(captureScreen(), '#555AB6', {
-						region: [x, y, dx, dy],
-						threshold: 10,
-					});
-				} while (!point);
-			}
+			/* 			if (pointok && cic == "true") {
+							console.info('答案正确');
+							do { // 防同一题进行两次OCR和点击选项
+								var point = findColor(captureScreen(), '#555AB6', {
+									region: [x, y, dx, dy],
+									threshold: 10,
+								});
+							} while (!point);
+						} */
+			/* 			if (pointokno && cic == "true") {
+							console.error('答案错误');
+							files.append('/sdcard/Wronganswer.txt', "\n" + question);
+							do { // 防同一题进行两次OCR和点击选项
+								var point = findColor(captureScreen(), '#555AB6', {
+									region: [x, y, dx, dy],
+									threshold: 10,
+								});
+							} while (!point);
+						} */
 			console.log('等待下一题\n----------');
 		}
 		// 四人
