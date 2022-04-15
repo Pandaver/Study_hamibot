@@ -2136,24 +2136,18 @@ function do_contest_answer(depth_option, question1) {
 	rea = /选择正确的读音.*/g;
 	rec = /下列不属于二十四史的是.*/g;
 	rex = /劳动行政部门自收到集体合同文本之日起.*/g;
-	if (question.length < 3) {
-		// 如果处理过的题目长度小于未处理过的题题目的一半，则使用未被处理过的题目
-		if (debug) console.error('处理后的题目存在异常！！！');
-		var question = old_old_question;
-		if (debug) console.log('使用old_old_question！\n' + old_old_question);
-	}
 	if (reb.test(question) || rea.test(question)) {
-		var ocrer = true;
-		if (debug) console.info('发现选择正确/词语类题目');
+		if (debug) console.info('发现选择正确/词语类题目，直接用题库中的选项答题！');
 		//		var question = old_old_question;
 		//		console.log('使用old_old_question！\n' + old_old_question);
-		if (debug) console.log('识别一次选项');
+		// if (debug) console.log('识别一次选项');
 		while (true) {
 			if (className('android.widget.RadioButton').depth(32).exists()) {
 				break;
 			}
 			if (text('继续挑战').exists()) return -1;
 		}
+		var onlx = true;
 		try {
 			var img = captureScreen();
 			var b = className('ListView').depth(29).findOne(3000).bounds();
@@ -2168,12 +2162,27 @@ function do_contest_answer(depth_option, question1) {
 			// images.save(img, "/sdcard/选项"+xn+".png", "png", 50);
 			// xn++;
 			console.log('选项: ' + old_question);
+			var question = old_old_question + old_question;
+			if (debug) console.log('合并后：' + question);
 		} catch (e) {
 			console.error(e);
 			console.info('选项获取失败');
 		}
-		var question = old_old_question + old_question;
-		if (debug) console.log('合并后：' + question);
+		if (reb.test(old_old_question)) {
+			xaunxbj = old_question
+			xaunxbj = xaunxbj.replace(/A./g, "|");
+			xaunxbj = xaunxbj.replace(/B./g, "|");
+			var xaunxbjA = xaunxbj.split("|")[1];
+			var xaunxbjB = xaunxbj.split("|")[2];
+			if (xaunxbjA === xaunxbjB) {
+				if (debug) console.log('AB选项一致，使用原选项');
+			} else {
+				if (debug) console.log('AB选项不一致，进行乱序识别');
+				var onlx = false;
+			}
+		}
+	} else {
+		var onlx = false;
 	}
 	var option = 'N';
 	var answer = 'N';
@@ -2195,9 +2204,9 @@ function do_contest_answer(depth_option, question1) {
 				answers = answers.replace(/暖陀/g, "蹉跎");
 				answers = answers.replace(/暖跑/g, "蹉跎");
 				answers = answers.replace(/跨踏/g, "踌躇");
-				answers = answers.replace(/chuo/g, "chuò");
-				answers = answers.replace(/cuotuo/g, "cuōtuó");
-				answers = answers.replace(/duo/g, "duō");
+				// answers = answers.replace(/chuo/g, "chuò");
+				// answers = answers.replace(/cuotuo/g, "cuōtuó");
+				// answers = answers.replace(/duo/g, "duō");
 				answers = answers.replace(/蹈/g, "踌躇");
 				answers = answers.replace(/调帐/g, "惆怅");
 				answers = answers.replace(/任悔/g, "忏悔");
@@ -2262,6 +2271,12 @@ function do_contest_answer(depth_option, question1) {
 	// question_list：题库
 	//	console.log('similarity_question:' + question);
 	//	if (question == null) question = old_question
+	if (question.length < 3) {
+		// 如果处理过的题目长度小于未处理过的题题目的一半，则使用未被处理过的题目
+		if (debug) console.error('处理后的题目存在异常！！！');
+		var question = old_old_question;
+		if (debug) console.log('使用old_old_question！\n' + old_old_question);
+	}
 	for (var i = 0; i < question_list.length; i++) {
 		// 搜题，
 		// question answer q flag
@@ -2282,7 +2297,7 @@ function do_contest_answer(depth_option, question1) {
 		option = question_list[pos][1];
 		answer = question_list[pos][2];
 	} else {
-		console.error('没搜到答案,题目异常：\n“' + old_question + '”，已保存到pos_Wronganswer.txt');
+		console.error('没搜到答案,题目异常：\n“' + old_question + '”，已保存到pos_Wronganswer.txt  长度:' + question_list.length);
 		if (debug) console.log('详细日志：\n' + '\n question: \n' + question + '\n ')
 		files.append('/sdcard/pos_Wronganswer.txt', "\n" + old_question);
 		console.info('此题pos = ' + pos + ',s=' + s + '  等待' + pos_sleep + '秒再答');
@@ -2292,7 +2307,7 @@ function do_contest_answer(depth_option, question1) {
 		var ans = answer.split('	')[option[0].charCodeAt(0) - 65];
 		console.info('答案:' + ans);
 		var last = option;
-		if (乱序 == 'a' && !first && !音字 && !ocrer) {
+		if (乱序 == 'a' && !first && !音字 && !onlx) {
 			while (true) {
 				if (className('android.widget.RadioButton').depth(32).exists()) {
 					break;
@@ -2318,7 +2333,7 @@ function do_contest_answer(depth_option, question1) {
 				console.info('选项获取失败');
 			}
 		}
-		if (乱序 == 'a') {
+		if (乱序 == 'a' && !onlx) {
 			try {
 				//				console.log('选项：' + old_question);
 				option = click_by_answer(ans, old_question);
@@ -2719,6 +2734,8 @@ function startDownload() {
 var xxx = 1;
 
 function zsyAnswer() {
+	reb = /选择词语的正确.*/g;
+	rea = /选择正确的读音.*/g;
 	var img = captureScreen();
 	try {
 		var point = findColor(img, '#1B1F25', {
@@ -2826,6 +2843,12 @@ function zsyAnswer() {
 			question = question.slice(question.indexOf('.') + 1);
 			question = question.replace(/,/g, "，");
 			console.log('OCR识别出的题目：' + question);
+			if (reb.test(question) || rea.test(question) && cic == "true") {
+				if (debug) console.warn('发现选择正确/词语类题目,不进行选项颜色判断');
+				var stopcic = true;
+			} else {
+				var stopcic = false;
+			}
 			if (question) {
 				var c = do_contest_answer(32, question);
 				// 丢进去找答案，并且选择选项
@@ -2843,9 +2866,8 @@ function zsyAnswer() {
 				break;
 			}
 			console.timeEnd('答题');
-			img.recycle(); // 回收
 			// 根据选项颜色判断是否答错
-			if (cic == "true") {
+			if (cic == "true" && !stopcic) {
 				do {
 					if (text("继续挑战").exists()) break; //如果发现答题结束就退出
 					if (text("我要分享").exists()) break; //如果发现答题结束就退出
@@ -2903,6 +2925,7 @@ function zsyAnswer() {
 							} while (!point);
 						} */
 			console.log('等待下一题\n----------');
+			img.recycle(); // 回收
 		}
 		// 四人
 		if (i == 0 && count == 2) {
