@@ -32,6 +32,8 @@ var tiaozhan = hamibot.env.tiaozhan;
 var cic = hamibot.env.cic;
 
 var choose = hamibot.env.select_01;
+var whethe = hamibot.env.whether_mute;
+if (whethe) var volume = device.getMusicVolume();
 
 var 专项答题下滑 = hamibot.env.select;
 var 每周答题下滑 = hamibot.env.selectm;
@@ -223,11 +225,22 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 		console.warn('警告：你启用了四人双人判断答案正确与否功能，该功能仍处于beta阶段，可能发生臆想不到的问题！！！');
 		delay(3);
 	}
+	if (whethe) {
+		console.info('正在自动静音')
+		try {
+			device.setMusicVolume(0);
+		} catch (e) {
+			console.error('权限不足，请给 “允许修改系统设置” 权限');
+			console.warn('将尝试跳转到设置页面，赋予权限后请重启脚本');
+			delay(2);
+			device.setMusicVolume(volume);
+		}
+	}
+	delay(2);
 	show_log();
 	while (!showlog) {
 		sleep(1000);
 	};
-
 	if (tiaozhan || siren || shuangren)
 		init();
 	if (tiaozhan && !(siren == true || shuangren == true || 订阅 != 'a' || stronger != 'a')) {} //只开了挑战答题的话
@@ -3144,6 +3157,11 @@ function rand_mode() {
 	}
 	end = new Date().getTime();
 	console.log("运行结束,共耗时" + (parseInt(end - start)) / 1000 + "秒");
+	if (whethe) {
+		delay(2);
+		device.setMusicVolume(volume);
+		console.info('已解除静音')
+	}
 	console.log("3s后自动关闭悬浮窗，查看日志请到hamibot内查看");
 	desc("工作").click();
 	delay(3);
