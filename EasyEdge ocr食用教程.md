@@ -12,7 +12,7 @@
 
 ### 食用方法：
 
-1) 在真机安装`EasyEdge OCR` (安装包在[Releases](https://github.com/wangwang-code/Study_hamibot/releases)中的`全家桶.zip`中)
+1) 在真机安装`EasyEdge OCR` (安装包在[Releases](https://github.com/wangwang-code/Study_hamibot/releases)中的`Study_hamibot.zip`中)
 2) 编辑配置 `文字识别(OCR)类型选择` 选择 `EasyEdge OCR,需要安装EasyEdge ocr插件，并以下一下内容` 并且填写`EasyEdge OCR地址` 一般填 `默认` 即可
 3) 启动vmos虚拟机 返回真机 打开`EasyEdge OCR`
 4) 确保虚拟机中的机器人在线，在控制台启动脚本
