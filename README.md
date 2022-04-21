@@ -46,6 +46,16 @@
 - **完整日志内容才能解决问题**
 
 ---
+## 2022.4.21更新
+
+**使用全新版号，脚本及其配套OCR插件将会在[Releases](https://github.com/wangwang-code/Study_hamibot/releases)中发布“全家桶.zip”**
+
+- 添加`EasyEdge OCR`
+- 等待选项显示后再进行选项识别
+- 清理竞赛中的无用代码
+- 去除使用须知
+
+---
 
 ## 2022.04.10.850
 

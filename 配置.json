@@ -144,12 +144,20 @@
 		"label": "文字识别(OCR)类型选择",
 		"options": {
 			"b": "第三方OCR插件,需要安装第三方插件->推荐",
+			"e": "EasyEdge OCR,需要安装EasyEdge ocr插件，并以下一下内容",
 			"c": "hamibot内置OCR",
 			"a": "华为OCR接口,需要填入以下关于华为的内容",
 			"d": "百度OCR接口,需要填入以下关于百度的内容"
 		},
 		"validation": "required",
 		"help": "帮助：选择适合自己手机的文字识别，建议都试一遍"
+	},
+	{
+		"name": "easyedge_ocr_url",
+		"type": "text",
+		"label": "EasyEdge OCR地址",
+		"placeholder": "http://127.0.0.1:34567/",
+		"help": "需要安装EasyEdge OCR并启动，填“默认”使用默认地址"
 	},
 	{
 		"name": "AK",
