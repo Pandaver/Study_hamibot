@@ -1,5 +1,4 @@
 auto.waitFor();
-// auto.setMode('fast');
 importClass(android.database.sqlite.SQLiteDatabase);
 importClass(java.net.HttpURLConnection);
 importClass(java.net.URL);
@@ -16,7 +15,7 @@ if (hamibot.env.QuestionBank_URL == undefined) {
 var dbd = hamibot.env.dbd;
 var path = '/sdcard/QuestionBank.db';
 device.wakeUpIfNeeded(); //点亮屏幕
-var first = true; //记录答题的第一次
+// var first = true; //记录答题的第一次
 var r; // 替换用；
 var meizhou_txt = hamibot.env.checkbox_02;
 var zhuanxiang_txt = hamibot.env.checkbox_01;
@@ -117,8 +116,8 @@ function check_easyedge_ocr() {
 		console.error('EasyEdge ocr地址未填写!!!');
 		exit();
 	}
-	var check_url = http.get(easyedge_ocr_url);
 	try {
+		var check_url = http.get(easyedge_ocr_url);
 		if (check_url.statusCode >= 200 && check_url.statusCode < 300) {
 			console.info('easyedge_ocr正常');
 		} else if (check_url.statusCode == 404) {
@@ -2161,7 +2160,7 @@ function challengeQuestion() {
 //////////////////////////////////////////////////////////////////
 
 // var xn = 0;
-var 音字 = false;
+// var 音字 = false;
 /*
 获取ocr识别出来的题目,depth_option对应32，question1对应question
 */
@@ -2245,8 +2244,8 @@ function do_contest_answer(depth_option, question1) {
 	var answer = 'N';
 	var similars = 0;
 	var pos = -1;
-	var answers_list = '';
-	if (rex.test(question) || rec.test(question) || reg.test(question) || rea.test(question) || reb.test(question)) {
+	// var answers_list = '';
+	/* if (rex.test(question) || rec.test(question) || reg.test(question) || rea.test(question) || reb.test(question)) {
 		// 音字 = true;
 		// first = false;
 		try {
@@ -2325,7 +2324,7 @@ function do_contest_answer(depth_option, question1) {
 		};
 	}
 	//	console.log('answers_list:' + answers_list)
-	if (音字) question = answers_list;
+	if (音字) question = answers_list; */
 	// question_list：题库
 	//	console.log('similarity_question:' + question);
 	//	if (question == null) question = old_question
@@ -2339,7 +2338,7 @@ function do_contest_answer(depth_option, question1) {
 		// 搜题，
 		// question answer q flag
 		// 丢进去跟题库比较相似
-		var s = similarity(question_list[i][0], question_list[i][2], question, 音字);
+		var s = similarity(question_list[i][0], question_list[i][2], question, false);
 		if (s > similars) {
 			// 如果相似度大于0（题库中找到了）
 			similars = s;
@@ -2418,9 +2417,10 @@ function do_contest_answer(depth_option, question1) {
 			if (text('继续挑战').exists()) return -1;
 		}
 		if (text('继续挑战').exists()) return -1;
-		if (!first && !音字) {
-			sleep(延迟时间);
-		}
+		// if (!first && !音字) {
+		// 	sleep(延迟时间);
+		// }
+		sleep(延迟时间);
 		// first = false;
 		onlx = false;
 		try {
@@ -2870,8 +2870,8 @@ function zsyAnswer() {
 				count = 1;
 			}
 		}
-		first = true;
-		音字 = false;
+		// first = true;
+		// 音字 = false;
 		delay(1);
 		if (text('知道了').exists()) {
 			console.warn('答题已满');
@@ -2908,9 +2908,9 @@ function zsyAnswer() {
 			try {
 				range = className("ListView").findOnce().parent().bounds();
 				// if (choose == 'a') img = images.inRange(img, '#000000', '#444444');
-				if (!first && !音字)
-					img = images.clip(img, x, y, dx, (range.bottom - y) / 3);
-				else
+				// if (!first && !音字)
+				// 	img = images.clip(img, x, y, dx, (range.bottom - y) / 3);
+				// else
 					img = images.clip(img, x, y, dx, range.bottom - y);
 			} catch (e) {
 				img = images.clip(img, x, y, dx, dy);
@@ -2920,20 +2920,20 @@ function zsyAnswer() {
 			var question;
 			// 文字识别
 			if (choose == 'a') {
-				if (!first && !音字)
-					img = images.inRange(img, '#000000', '#444444');
+				// if (!first && !音字)
+				// 	img = images.inRange(img, '#000000', '#444444');
 				question = huawei_ocr_api(img, token);
 			} else if (choose == 'b') {
 				question = ocr_api(img);
 			} else if (choose == 'e') {
 				question = easyedge_ocr_api(img);
 			} else if (choose == 'c') {
-				if (!first && !音字) // 第一题不变色的原因的：
-					img = images.inRange(img, '#000000', '#444444');
+				// if (!first && !音字) // 第一题不变色的原因的：
+				// 	img = images.inRange(img, '#000000', '#444444');
 				question = hamibot_ocr_api(img);
 			} else {
-				if (!first && !音字)
-					img = images.inRange(img, '#000000', '#444444');
+				// if (!first && !音字)
+				// 	img = images.inRange(img, '#000000', '#444444');
 				question = baidu_ocr_api(img, token);
 			}
 			question = question.slice(question.indexOf('.') + 1);
