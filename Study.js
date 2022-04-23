@@ -2458,9 +2458,9 @@ function click_by_answer(ans, question) {
 	question = question.replace(/ /g, '');
 	question = question.replace(/4\./g, 'A.');
 	question = question.replace(/:/g, '：');
-	try {
-		question = r.replace(question);
-	} catch (e) {}
+	// try {
+	// 	question = r.replace(question);
+	// } catch (e) {}
 	// question = question.split('A.');
 	question = question.replace(/c\./g, "C.");
 	question = question.replace(/，/g, ".");
@@ -2722,14 +2722,14 @@ var download = null;
 function init() {
 	if (init_true) return;
 
-	threads.start(function() {
+/* 	threads.start(function() {
 		try {
 			var x = http.get('https://gitee.com/wangwang-code/picture-bed/raw/master/replace.js').body.string();
 			files.write('/sdcard/replace.js', x);
 			r = require('/sdcard/replace.js');
 		} catch (e) {}
 		x = null;
-	});
+	}); */
 
 	console.info('正在加载四人/双人/挑战题库中.....');
 	downloadDialog = dialogs.build({
