@@ -12,7 +12,7 @@ if (hamibot.env.QuestionBank_URL == undefined) {
 	console.info('每日每周专项题库地址: ' + url);
 }
 
-var dbd = hamibot.env.dbd;
+// var dbd = hamibot.env.dbd;
 var path = '/sdcard/QuestionBank.db';
 device.wakeUpIfNeeded(); //点亮屏幕
 // var first = true; //记录答题的第一次
@@ -86,6 +86,37 @@ if (hamibot.env.init_url == undefined) {
 }
 var file_tmp = false;
 var tikus = '';
+var wht_update_tiku_end = false;
+var update_tiku = false;
+
+function wht_update_tiku() { // 是否更新题库
+	threads.start(function() {
+		//			console.info('查看使用须知，15s后自动关闭');
+		var d = dialogs.build({
+			title: "是否更新题库？",
+			content: "点击确定将更新每日每周专项题库 \n 5秒后关闭",
+			positive: "确定",
+		}).on("positive", () => {
+			d.dismiss();
+			// setClip(text);
+			d = null;
+			// text = null;
+			update_tiku = true;
+			wht_update_tiku_end = true;
+		}).show();
+		sleep(5000);
+		if (!update_tiku) {
+			d.dismiss();
+			// setClip(text)
+			d = null;
+			// text = null;
+			wht_update_tiku_end = true;
+		}
+	});
+}
+
+
+
 /**
  * 获取用户token
  */
@@ -231,28 +262,56 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 		}
 	}
 	console.info('正在打开Hamibot');
+	launchApp("Hamibot");
 	if (!files.exists(path)) {
 		//toastLog('没有题库,正在下载题库，请等待！！！');
 		threads.start(function() {
-			var tiku = http.get(url).body.bytes();
+			var tiku = http.get(url, {
+				headers: {
+					'Content-Type': 'text/plain;charset=utf8',
+					'Connection': 'Keep-Alive',
+					'Accept-Encoding': 'gzip, deflate',
+					'User-Agent':
+					  'Mozilla/5.0 (Linux; Android 11; V2048A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
+				},
+			}).body.bytes();
 			//console.log(tiku)
 			files.writeBytes(path, tiku);
 		});
+	} else {
+		wht_update_tiku();
+		while (!wht_update_tiku_end) {
+			sleep(1000);
+		};
+		if (update_tiku) {
+			toastLog('强制更新每日每周专项题库中');
+			var update_tiku_ok = false;
+			threads.start(function() {
+				console.time('更新每日每周专项题库耗时');
+				var tiku = http.get(url, {
+					headers: {
+						'Content-Type': 'text/plain;charset=utf8',
+						'Connection': 'Keep-Alive',
+						'Accept-Encoding': 'gzip, deflate',
+						'User-Agent':
+						  'Mozilla/5.0 (Linux; Android 11; V2048A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
+					},
+				}).body.bytes();
+				//console.log(tiku)
+				files.writeBytes(path, tiku);
+				console.timeEnd('更新每日每周专项题库耗时');
+				update_tiku_ok = true;
+			});
+			while (!update_tiku_ok) {
+				sleep(1000);
+			};
+		}
 	}
-	if (dbd == 'true') {
-		toastLog('强制更新每日每周专项题库中');
-		threads.start(function() {
-			var tiku = http.get(url).body.bytes();
-			//console.log(tiku)
-			files.writeBytes(path, tiku);
-		});
-	}
-	launchApp("Hamibot");
 	delay(2);
-	if (cic == "true") {
-		console.warn('警告：你启用了四人双人判断答案正确与否功能，该功能仍处于beta阶段，可能发生臆想不到的问题！！！');
-		delay(3);
-	}
+	// if (cic == "true") {
+	// 	console.warn('警告：你启用了四人双人判断答案正确与否功能，该功能仍处于beta阶段，可能发生臆想不到的问题！！！');
+	// 	delay(3);
+	// }
 	if (whethe) {
 		console.info('正在自动静音')
 		try {
@@ -326,7 +385,7 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 
 }
 
-function show_log() { // 使用须知
+/* function show_log() { // 使用须知
 	threads.start(function() {
 		try {
 			var text = http.get('https://gitee.com/wangwang-code/picture-bed/raw/master/showlogs').body
@@ -364,7 +423,7 @@ function show_log() { // 使用须知
 			showlog = true;
 		}
 	});
-}
+} */
 
 
 var lCount = 1; //挑战答题轮数
@@ -2664,18 +2723,19 @@ function hamibot_ocr_api() {
 function easyedge_ocr_api(img) {
 	console.log('EasyEdge OCR文字识别中');
 	// var imgh = images.threshold(img, 100, 255, "BINARY");
-	var text = images.toBase64(img, 'jpg', 60);
+	// var text = images.toBase64(img, 'jpg', 60);
+	var text = images.toBase64(img);
 	//	var easyedge_ocr_url = hamibot.env.easyedge_ocr_url;
 	r = http.postJson(easyedge_ocr_url, {
 		action: 'ocr',
 		imgPath: text,
-	}, {
-		headers: {
-			'Content-Type': 'text/plain;application/json;charset=utf8',
-			'Connection': 'Keep-Alive',
-			'Accept-Encoding': 'gzip, deflate'
-		}
-	});
+	}/* , {
+	headers: {
+		'Content-Type': 'text/plain;charset=utf8',
+		'Connection': 'Keep-Alive',
+		'Accept-Encoding': 'gzip, deflate'
+	},
+	} */);
 	/* 	r = http.postJson(easyedge_ocr_url, {
 			action: 'ocr',
 			imgPath: text,
@@ -2722,14 +2782,14 @@ var download = null;
 function init() {
 	if (init_true) return;
 
-/* 	threads.start(function() {
-		try {
-			var x = http.get('https://gitee.com/wangwang-code/picture-bed/raw/master/replace.js').body.string();
-			files.write('/sdcard/replace.js', x);
-			r = require('/sdcard/replace.js');
-		} catch (e) {}
-		x = null;
-	}); */
+	/* 	threads.start(function() {
+			try {
+				var x = http.get('https://gitee.com/wangwang-code/picture-bed/raw/master/replace.js').body.string();
+				files.write('/sdcard/replace.js', x);
+				r = require('/sdcard/replace.js');
+			} catch (e) {}
+			x = null;
+		}); */
 
 	console.info('正在加载四人/双人/挑战题库中.....');
 	downloadDialog = dialogs.build({
@@ -2911,7 +2971,7 @@ function zsyAnswer() {
 				// if (!first && !音字)
 				// 	img = images.clip(img, x, y, dx, (range.bottom - y) / 3);
 				// else
-					img = images.clip(img, x, y, dx, range.bottom - y);
+				img = images.clip(img, x, y, dx, range.bottom - y);
 			} catch (e) {
 				img = images.clip(img, x, y, dx, dy);
 			}

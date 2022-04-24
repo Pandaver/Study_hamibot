@@ -12,17 +12,6 @@
 		"help": "一定要是直链！！，留空使用默认地址"
 	},
 	{
-		"name": "dbd",
-		"type": "select",
-		"label": "强制更新每日每周专项题库",
-		"options": {
-			"false": "不进行强制更新",
-			"true": "进行强制更新"
-		},
-		"validation": "required",
-		"help": "一般不用更新"
-	},
-	{
 		"name": "init_url",
 		"type": "text",
 		"label": "自定义题库四人/双人/挑战",
