@@ -271,14 +271,14 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 					'Content-Type': 'text/plain;charset=utf8',
 					'Connection': 'Keep-Alive',
 					'Accept-Encoding': 'gzip, deflate',
-					'User-Agent':
-					  'Mozilla/5.0 (Linux; Android 11; V2048A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
+					'User-Agent': 'Mozilla/5.0 (Linux; Android 11; V2048A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
 				},
 			}).body.bytes();
 			//console.log(tiku)
 			files.writeBytes(path, tiku);
 		});
 	} else {
+		sleep(5000);
 		wht_update_tiku();
 		while (!wht_update_tiku_end) {
 			sleep(1000);
@@ -293,8 +293,7 @@ if (shuangren == true || siren == true || 订阅 != 'a' || stronger != 'a' || ti
 						'Content-Type': 'text/plain;charset=utf8',
 						'Connection': 'Keep-Alive',
 						'Accept-Encoding': 'gzip, deflate',
-						'User-Agent':
-						  'Mozilla/5.0 (Linux; Android 11; V2048A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
+						'User-Agent': 'Mozilla/5.0 (Linux; Android 11; V2048A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
 					},
 				}).body.bytes();
 				//console.log(tiku)
@@ -2272,12 +2271,15 @@ function do_contest_answer(depth_option, question1) {
 				old_question = ocr_api(img);
 			} else if (choose == 'c') {
 				old_question = hamibot_ocr_api(img);
-			} else old_question = baidu_ocr_api(img, token);
+			} else {
+				old_question = baidu_ocr_api(img, token);
+			}
 			// images.save(img, "/sdcard/选项"+xn+".png", "png", 50);
 			// xn++;
 			console.log('选项: ' + old_question);
 			var question = old_old_question + old_question;
 			if (debug) console.log('合并后：' + question);
+
 		} catch (e) {
 			console.error(e);
 			console.info('选项获取失败');
@@ -2448,7 +2450,9 @@ function do_contest_answer(depth_option, question1) {
 					old_question = ocr_api(img);
 				} else if (choose == 'c') {
 					old_question = hamibot_ocr_api(img);
-				} else old_question = baidu_ocr_api(img, token);
+				} else {
+					old_question = baidu_ocr_api(img, token);
+				}
 				// images.save(img, "/sdcard/选项"+xn+".png", "png", 50);
 				// xn++;
 				// console.log('选项：' + old_question);
@@ -2727,15 +2731,17 @@ function easyedge_ocr_api(img) {
 	var text = images.toBase64(img);
 	//	var easyedge_ocr_url = hamibot.env.easyedge_ocr_url;
 	r = http.postJson(easyedge_ocr_url, {
-		action: 'ocr',
-		imgPath: text,
-	}/* , {
-	headers: {
-		'Content-Type': 'text/plain;charset=utf8',
-		'Connection': 'Keep-Alive',
-		'Accept-Encoding': 'gzip, deflate'
-	},
-	} */);
+			action: 'ocr',
+			imgPath: text,
+		}
+		/* , {
+			headers: {
+				'Content-Type': 'text/plain;charset=utf8',
+				'Connection': 'Keep-Alive',
+				'Accept-Encoding': 'gzip, deflate'
+			},
+			} */
+	);
 	/* 	r = http.postJson(easyedge_ocr_url, {
 			action: 'ocr',
 			imgPath: text,
@@ -2979,6 +2985,10 @@ function zsyAnswer() {
 			// xxx++;
 			var question;
 			// 文字识别
+			if (className("android.view.View").text("100").depth(24).exists()) {
+				console.info('有人100了');
+				break;
+			}
 			if (choose == 'a') {
 				// if (!first && !音字)
 				// 	img = images.inRange(img, '#000000', '#444444');
@@ -2999,7 +3009,7 @@ function zsyAnswer() {
 			question = question.slice(question.indexOf('.') + 1);
 			question = question.replace(/,/g, "，");
 			console.log('OCR识别出的题目：' + question);
-			if (reb.test(question) || rea.test(question) && cic == "true") {
+			if (reb.test(question) || rea.test(question) && cic) {
 				if (debug) console.warn('发现选择正确/词语类题目,不进行选项颜色判断');
 				var stopcic = true;
 			} else {
@@ -3022,7 +3032,6 @@ function zsyAnswer() {
 				break;
 			}
 			console.timeEnd('答题');
-			img.recycle(); // 回收
 			// 根据选项颜色判断是否答错
 			if (cic == "true" && !stopcic) {
 				do {
@@ -3145,6 +3154,7 @@ function zsyAnswer() {
 		// console.warn('额外一轮结束!');
 	}
 	console.info('答题结束'); // 竞赛结束
+	img.recycle(); // 回收
 	back();
 	delay(3);
 	back();
