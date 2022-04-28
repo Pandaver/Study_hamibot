@@ -71,7 +71,7 @@ var {
 let ocr;
 var token;
 var ttt;
-
+var r, Base64_img;
 var question_list = [];
 var init_true = false;
 var downloadDialog = null;
@@ -2245,9 +2245,6 @@ function do_contest_answer(depth_option, question1) {
 	var onlx;
 	if (reb.test(question) || rea.test(question)) {
 		if (debug) console.info('发现选择正确/词语类题目，直接用题库中的选项答题！');
-		//		var question = old_old_question;
-		//		console.log('使用old_old_question！\n' + old_old_question);
-		// if (debug) console.log('识别一次选项');
 		while (true) {
 			if (className('android.widget.RadioButton').depth(32).exists()) {
 				break;
@@ -2260,6 +2257,7 @@ function do_contest_answer(depth_option, question1) {
 				} while (!xuanx == null); */
 		className('ListView').depth(29).waitFor();
 		try {
+			var ocr_s = true;
 			var img = captureScreen();
 			var b = className('ListView').depth(29).findOne(3000).bounds();
 			img = images.clip(img, b.left, b.top, b.right - b.left, b.bottom - b.top);
@@ -2291,15 +2289,17 @@ function do_contest_answer(depth_option, question1) {
 			var xaunxbjA = xaunxbj.split("|")[1];
 			var xaunxbjB = xaunxbj.split("|")[2];
 			if (xaunxbjA === xaunxbjB) {
-				if (debug) console.log('AB选项一致，使用原选项');
+				console.log('AB选项一致，使用原选项');
+				onlx = true;
 			} else {
-				if (debug) console.log('AB选项不一致，进行乱序识别');
+				console.log('AB选项不一致，进行乱序识别');
 				onlx = false;
 			}
+		} else {
+			onlx = false;
 		}
-		onlx = true;
 	} else {
-		onlx = false;
+		var ocr_s = false;
 	}
 	var option = 'N';
 	var answer = 'N';
@@ -2426,7 +2426,7 @@ function do_contest_answer(depth_option, question1) {
 		console.info('答案:' + ans);
 		var last = option;
 		//		if (乱序 == 'a' && !first && !音字 && !onlx) {
-		if (!onlx) {
+		if (!ocr_s) {
 			while (true) {
 				if (className('android.widget.RadioButton').depth(32).exists()) {
 					break;
@@ -2726,13 +2726,12 @@ function hamibot_ocr_api() {
 // 百度easyedge
 function easyedge_ocr_api(img) {
 	console.log('EasyEdge OCR文字识别中');
-	// var imgh = images.threshold(img, 100, 255, "BINARY");
-	// var text = images.toBase64(img, 'jpg', 60);
-	var text = images.toBase64(img);
+	img_scale = images.scale(img, 0.25, 0.25); // 将图片缩放为原来的一半
+	Base64_img = images.toBase64(img_scale, 'jpeg', 50);
 	//	var easyedge_ocr_url = hamibot.env.easyedge_ocr_url;
 	r = http.postJson(easyedge_ocr_url, {
 			action: 'ocr',
-			imgPath: text,
+			imgPath: Base64_img,
 		}
 		/* , {
 			headers: {
@@ -2747,6 +2746,10 @@ function easyedge_ocr_api(img) {
 			imgPath: text,
 		}); */
 	let obj = r.body.json();
+	threads.start(function() {
+		img_scale.recycle();
+		var r, Base64_img;
+	});
 	return obj.result;
 }
 
@@ -2891,6 +2894,7 @@ function startDownload() {
 var xxx = 1;
 
 function zsyAnswer() {
+	var break100 = false;
 	reb = /选择词语的正确.*/g;
 	rea = /选择正确的读音.*/g;
 	var img = captureScreen();
@@ -2987,6 +2991,7 @@ function zsyAnswer() {
 			// 文字识别
 			if (className("android.view.View").text("100").depth(24).exists()) {
 				console.info('有人100了');
+				break100 = true;
 				break;
 			}
 			if (choose == 'a') {
@@ -3033,8 +3038,13 @@ function zsyAnswer() {
 			}
 			console.timeEnd('答题');
 			// 根据选项颜色判断是否答错
-			if (cic == "true" && !stopcic) {
+			if (cic && !stopcic) {
 				do {
+					if (className("android.view.View").text("100").depth(24).exists()) {
+						console.info('有人100了');
+						break100 = true;
+						break;
+					}
 					if (text("继续挑战").exists()) break; //如果发现答题结束就退出
 					if (text("我要分享").exists()) break; //如果发现答题结束就退出
 					var point = findColor(captureScreen(), '#555AB6', {
@@ -3093,7 +3103,14 @@ function zsyAnswer() {
 								});
 							} while (!point);
 						} */
+			if (break100) {
+				console.info('有人100了，不再等待下一题！');
+				sleep(5000);
+				if (!text("继续挑战").exists()) sleep(3000);
+				break;
+			}
 			console.log('等待下一题\n----------');
+			img.recycle(); // 回收
 			// if (className('android.widget.Image').depth(23).waitFor()) break;
 		}
 		// 四人
@@ -3154,7 +3171,6 @@ function zsyAnswer() {
 		// console.warn('额外一轮结束!');
 	}
 	console.info('答题结束'); // 竞赛结束
-	img.recycle(); // 回收
 	back();
 	delay(3);
 	back();

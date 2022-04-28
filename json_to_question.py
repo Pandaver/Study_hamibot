@@ -4,7 +4,7 @@ import re
 import time
 
 i = 0
-with open('H:\Study_hamibot\QuestionBank.json','r',encoding='utf8')as fp:
+with open('.\QuestionBank.json','r',encoding='utf8')as fp:
     json_data = json.load(fp)
     for key, value in json_data.items():
         cy = key.replace("        。|","")
@@ -51,7 +51,7 @@ with open('H:\Study_hamibot\QuestionBank.json','r',encoding='utf8')as fp:
 #            strt = 'INSERT INTO "tiku" VALUES (' + "'" + pie[0]+pie[1]+'、'+pie[2] + "'" + ',' + "'" + value + "'" + ", NULL, '" + options + "', '" + time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())) +"');"
 #        if (pie[4] == )
 #        strt = options + " " + pie[0] + " " + pie[1] + "	"
-        f = open('H:\Study_hamibot\question','a',encoding='utf8')
+        f = open('.\question','a',encoding='utf8')
         f.write(strt + "\n")
         f.close()
         i = i + 1
