@@ -46,9 +46,20 @@
 - **完整日志内容才能解决问题**
 
 ---
+
+## 2022.4.29更新
+
+**使用全新版号，脚本及其配套OCR插件将会在[Releases](https://github.com/wangwang-code/Study_hamibot/releases)中发布“Study_hamibot”**
+
+- 本地化四人双人挑战题库
+- 优化`EasyEdge OCR`识别速度
+- 竞赛检查是否有人100，并停止等待下一题
+
+---
+
 ## 2022.4.21更新
 
-**使用全新版号，脚本及其配套OCR插件将会在[Releases](https://github.com/wangwang-code/Study_hamibot/releases)中发布“全家桶.zip”**
+**使用全新版号，脚本及其配套OCR插件将会在[Releases](https://github.com/wangwang-code/Study_hamibot/releases)中发布“Study_hamibot”**
 
 - 添加`EasyEdge OCR`
 - 等待选项显示后再进行选项识别
