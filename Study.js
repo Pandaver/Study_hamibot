@@ -30,9 +30,11 @@ var meiri = hamibot.env.meiri;
 var tiaozhan = hamibot.env.tiaozhan;
 
 var cic = hamibot.env.cic;
-var easyedge_ocr_url = hamibot.env.easyedge_ocr_url;
-if (easyedge_ocr_url == "默认") {
+
+if (hamibot.env.easyedge_ocr_url == "默认") {
 	var easyedge_ocr_url = 'http://127.0.0.1:34567/';
+} else {
+	var easyedge_ocr_url = hamibot.env.easyedge_ocr_url;
 }
 
 var choose = hamibot.env.select_01;
@@ -71,14 +73,15 @@ var {
 let ocr;
 var token;
 var ttt;
-var r, Base64_img;
 var question_list = [];
 var init_true = false;
 var downloadDialog = null;
 // var init_url = "https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/question";    
 // var init_url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/question';
 if (hamibot.env.init_url == undefined) {
-	var init_url = 'https://gitee.com/wangwang-code/tiku/raw/main/question';
+	// var init_url = 'https://gitee.com/wangwang-code/tiku/raw/main/question';
+	var init_url =
+		'https://git.yumenaka.net/https://raw.githubusercontent.com/wangwang-code/Study_hamibot/master/question';
 	console.info('四人/双人/挑战使用默认题库地址');
 } else {
 	var init_url = hamibot.env.init_url;
@@ -87,6 +90,8 @@ if (hamibot.env.init_url == undefined) {
 var file_tmp = false;
 var tikus = '';
 var wht_update_tiku_end = false;
+var wht_update_tiku_competition_end = false;
+var update_tiku_competition = false;
 var update_tiku = false;
 
 function wht_update_tiku() { // 是否更新题库
@@ -115,7 +120,31 @@ function wht_update_tiku() { // 是否更新题库
 	});
 }
 
-
+function wht_update_tiku_competition() { // 是否更新题库
+	threads.start(function() {
+		//			console.info('查看使用须知，15s后自动关闭');
+		var b = dialogs.build({
+			title: "是否更新竞赛和挑战答题题库？",
+			content: "点击确定将更新竞赛和挑战答题题库 \n 5秒后关闭",
+			positive: "确定",
+		}).on("positive", () => {
+			b.dismiss();
+			// setClip(text);
+			b = null;
+			// text = null;
+			update_tiku_competition = true;
+			wht_update_tiku_competition_end = true;
+		}).show();
+		sleep(5000);
+		if (!update_tiku_competition) {
+			b.dismiss();
+			// setClip(text)
+			b = null;
+			// text = null;
+			wht_update_tiku_competition_end = true;
+		}
+	});
+}
 
 /**
  * 获取用户token
@@ -2726,8 +2755,8 @@ function hamibot_ocr_api() {
 // 百度easyedge
 function easyedge_ocr_api(img) {
 	console.log('EasyEdge OCR文字识别中');
-	img_scale = images.scale(img, 0.25, 0.25); // 将图片缩放为原来的一半
-	Base64_img = images.toBase64(img_scale, 'jpeg', 50);
+	var img_scale = images.scale(img, 0.25, 0.25); // 将图片缩放为原来的一半
+	var Base64_img = images.toBase64(img_scale, 'jpeg', 50);
 	//	var easyedge_ocr_url = hamibot.env.easyedge_ocr_url;
 	r = http.postJson(easyedge_ocr_url, {
 			action: 'ocr',
@@ -2746,10 +2775,11 @@ function easyedge_ocr_api(img) {
 			imgPath: text,
 		}); */
 	let obj = r.body.json();
-	threads.start(function() {
-		img_scale.recycle();
-		var r, Base64_img;
-	});
+	/*
+		threads.start(function() {
+			img_scale.recycle();
+			var r = null, Base64_img = null;
+		});*/
 	return obj.result;
 }
 
@@ -2789,6 +2819,10 @@ var download = null;
  * @return: null
  */
 function init() {
+	wht_update_tiku_competition();
+	while (!wht_update_tiku_competition_end) {
+		sleep(1000);
+	};
 	if (init_true) return;
 
 	/* 	threads.start(function() {
@@ -2799,31 +2833,57 @@ function init() {
 			} catch (e) {}
 			x = null;
 		}); */
-
-	console.info('正在加载四人/双人/挑战题库中.....');
-	downloadDialog = dialogs.build({
-		title: "正在加载四人/双人/挑战题库...",
-		progress: {
-			max: 100,
-			showMinMax: true
-		},
-		autoDismiss: false,
-		cancelable: true
-	}).show();
-	try {
-		startDownload();
-		// delay(2);
-		download.join(1000 * 60);
-		if (!file_tmp) {
-			download.interrupt();
-			console.error('四人/双人/挑战题库加载超时！，再次加载一次');
+	if (update_tiku_competition) {
+		console.info('正在加载四人/双人/挑战题库中.....');
+		downloadDialog = dialogs.build({
+			title: "正在加载四人/双人/挑战题库...",
+			progress: {
+				max: 100,
+				showMinMax: true
+			},
+			autoDismiss: false,
+			cancelable: true
+		}).show();
+		try {
 			startDownload();
+			// delay(2);
+			download.join(1000 * 60);
+			if (!file_tmp) {
+				download.interrupt();
+				console.error('四人/双人/挑战题库加载超时！，再次加载一次');
+				startDownload();
+			}
+			while (!file_tmp) {
+				toastLog('等待加载四人/双人/挑战题库!!!');
+				delay(2);
+			}
+			file_tmp = null;
+			console.info('保存题库到手机根目录下的question.txt （路径：/sdcard/question.txt）');
+			sleep(500);
+			tikus = tikus.split('\n');
+			for (var i = 0; i < tikus.length; i++) {
+				var t = tikus[i].split(' ');
+				if (t[1] && t[0]) {
+					var answer = '';
+					for (var j = 2; j < t.length; j++) { // 可能tiku答案有空格，但是被切割了
+						answer += t[j];
+					}
+					question_list.push([t[1], t[0], answer]);
+				}
+			}
+			answer = null;
+			tikus = null;
+			init_true = true;
+			if (question_list.length < 1000) {
+				console.info('四人/双人/挑战题库崩了！！！，等！！！');
+				exit();
+			}
+		} catch (e) {
+			console.error('四人/双人/挑战题库获取失败，检查网络连接！！！');
+			exit();
 		}
-		while (!file_tmp) {
-			toastLog('等待加载四人/双人/挑战题库!!!');
-			delay(2);
-		}
-		file_tmp = null;
+	} else if (files.exists('/sdcard/question.txt')) {
+		tikus = files.read('/sdcard/question.txt', encoding = "utf-8");
 		tikus = tikus.split('\n');
 		for (var i = 0; i < tikus.length; i++) {
 			var t = tikus[i].split(' ');
@@ -2842,8 +2902,12 @@ function init() {
 			console.info('四人/双人/挑战题库崩了！！！，等！！！');
 			exit();
 		}
-	} catch (e) {
-		console.error('四人/双人/挑战题库获取失败，检查网络连接！！！');
+		init_true = true;
+	} else if (!files.exists('/sdcard/question.txt')) {
+		console.error('手机根目录下未找到question.txt （路径： /sdcard/question.txt）');
+		exit();
+	} else {
+		console.error('未知错误！！！');
 		exit();
 	}
 }
@@ -2865,6 +2929,16 @@ function startDownload() {
 				if (numread < 0) {
 					toast("加载完成");
 					console.info("加载完成");
+					try {
+						files.write('/sdcard/question.txt', tikus, encoding = "utf-8");
+					} catch (e) {
+						console.error('题库写入文件失败');
+						sleep(3000);
+					}
+					if (!files.exists('/sdcard/question.txt')) {
+						console.error('题库写入未成功！');
+						sleep(3000);
+					}
 					downloadDialog.dismiss();
 					downloadDialog = null;
 					break;
@@ -3038,6 +3112,7 @@ function zsyAnswer() {
 			}
 			console.timeEnd('答题');
 			// 根据选项颜色判断是否答错
+			img.recycle(); // 回收
 			if (cic && !stopcic) {
 				do {
 					if (className("android.view.View").text("100").depth(24).exists()) {
@@ -3105,12 +3180,12 @@ function zsyAnswer() {
 						} */
 			if (break100) {
 				console.info('有人100了，不再等待下一题！');
+				var break100 = false;
 				sleep(5000);
-				if (!text("继续挑战").exists()) sleep(3000);
+				if (!text("继续挑战").exists()) sleep(5000);
 				break;
 			}
 			console.log('等待下一题\n----------');
-			img.recycle(); // 回收
 			// if (className('android.widget.Image').depth(23).waitFor()) break;
 		}
 		// 四人
