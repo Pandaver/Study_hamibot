@@ -2096,6 +2096,9 @@ function challengeQuestionLoop(conNum) {
 	{
 		listArray.forEach(item => {
 			var listDescStr = item.child(0).child(1).text();
+			console.info('选项: '+listDescStr);
+			delay(random(2, 3));
+			if (listDescStr == null) console.error('listDescStr为空');
 			if (listDescStr == answer) {
 				delay(random(0.5, 1)); //随机延时0.5-1秒
 				try {
@@ -3383,7 +3386,8 @@ function rand_mode() {
 			视频学习();
 		} else if (arr[i] == 3) {
 			订();
-		} else if (arr[i] == 4) {
+//		} else if (arr[i] == 4) {
+		} else if (true) {
 			挑战();
 		} else if (arr[i] == 5) {
 			文章和广播();
@@ -3502,7 +3506,7 @@ function 四人() {
 }
 
 function 挑战() {
-	// tzCount = 1;
+	 tzCount = 1;
 	if ((tzCount != 0 || 点点通['挑战答题']) && tiaozhan == true) {
 		news = false;
 		console.info('开始挑战答题');
