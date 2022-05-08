@@ -104,6 +104,12 @@
 		"help": "勾选之前，需要配置以下信息"
 	},
 	{
+		"name": "first_com_no",
+		"type": "checkbox",
+		"label": "首轮不答",
+		"help": "四人/双人第一次比赛不答（第一轮容易匹配到科技）"
+	},
+	{
 		"name": "cic",
 		"type": "select",
 		"label": "四人/双人判断答案是否正确（beta）",

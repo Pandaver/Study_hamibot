@@ -87,6 +87,7 @@ if (hamibot.env.init_url == undefined) {
 	var init_url = hamibot.env.init_url;
 	console.info('四人/双人/挑战题库地址: ' + init_url);
 }
+var first_com_no = hamibot.env.first_com_no;
 var file_tmp = false;
 var tikus = '';
 var wht_update_tiku_end = false;
@@ -2990,6 +2991,48 @@ function startDownload() {
 var xxx = 1;
 
 function zsyAnswer() {
+	if (first_com_no) {
+		console.info('已开启首轮不答');
+		sleep(random_time(delay_time));
+		if (text("随机匹配").exists()) {
+			text("随机匹配").findOne(3000).parent().child(0).click();
+			console.log("点击随机匹配");
+		} else {
+			console.log("点击开始比赛");
+			var s = text("开始比赛").findOne(5000);
+			if (s) {
+				s.click();
+			} else {
+				console.log('没有找到开始比赛，点击随机匹配');
+				text("随机匹配").findOne(3000).parent().child(0).click();
+			}
+		}
+		delay(1);
+		if (text('知道了').exists()) {
+			console.warn('答题已满');
+			text('知道了').findOnce().click();
+			delay(2);
+			if (text("随机匹配").exists() || text("开始比赛").exists()) {
+				console.info('停止脚本');
+				exit();
+			} else return 0;
+		}
+		className("ListView").waitFor();
+		console.info('等待比赛结束');
+		while (!text('继续挑战').exists()) {
+			sleep(5000);
+		}
+		console.info('比赛结束');
+		delay(1);
+		text('继续挑战').click();
+		delay(3);
+		var j = text("开始比赛").findOne(5000);
+		if (j = null) {
+			console.error('不在竞赛页面，停止脚本');
+			exit();
+		}
+		console.info('开始正式比赛');
+	}
 	var break100 = false;
 	reb = /选择词语的正确.*/g;
 	rea = /选择正确的读音.*/g;
@@ -3504,6 +3547,7 @@ function 双人() {
 		}
 		zsyAnswer();
 		delay(1);
+		console.info("双人答题结束，悬浮窗位置改变");
 		console.setPosition(0, device.height / 2);
 	}
 }
@@ -3530,6 +3574,7 @@ function 四人() {
 		}
 		zsyAnswer();
 		delay(0.5);
+		console.info("四人赛答题结束，悬浮窗位置改变");
 		console.setPosition(0, device.height / 2);
 		//delay(1);
 		// back();
