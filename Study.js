@@ -74,6 +74,69 @@ let ocr;
 var token;
 var ttt;
 var question_list = [];
+var status = false;//是否暂停
+while (status) { console.log("主线程暂停中"); sleep(750); };
+/**
+ * 人机验证
+ */
+var thread1 = threads.start(function () {
+    console.info("反滑块验证已启动");
+    while (true) {
+        if (text('访问异常').exists()) {
+            status = true;
+            console.error("人机验证！");
+            text("向右滑动验证").waitFor();
+            var hk_t = className("android.widget.TextView").text("向右滑动验证").findOne().parent().parent().bounds();
+            console.log(hk_t);
+            var x1_t = hk_t.left + 50,
+                x2_t = hk_t.right - 30,
+                y = hk_t.bottom - hk_t.top,
+                y2 = y / 2,
+                y1_t = hk_t.top + y2,
+                y2_t = y1_t;
+            console.log(hk_t.bottom, hk_t.top);
+            console.info(x1_t, y1_t, x2_t, y2_t, y, y2);
+            console.info(x1_t, y1_t, x2_t, y2_t);
+            swipe(x1_t, y1_t, x2_t, y2_t, 1500);
+            var sleep_i = 0 ;
+            while (text("向右滑动验证").exists()) {
+                if (sleep_i > 3) {
+                    console.error("可能滑动失败!");
+                    if (textContains("非常抱歉").exists()) {
+                        textContains("刷新").click();
+                    }
+                    delay(1);
+                    text("向右滑动验证").waitFor();
+                    var hk_t = className("android.widget.TextView").text("向右滑动验证").findOne().parent().parent().bounds();
+                    console.log(hk_t);
+                    var x1_t = hk_t.left + 50,
+                        x2_t = hk_t.right - 30,
+                        y = hk_t.bottom - hk_t.top,
+                        y2 = y / 2,
+                        y1_t = hk_t.top + y2,
+                        y2_t = y1_t;
+                    console.log(hk_t.bottom, hk_t.top);
+                    console.info(x1_t, y1_t, x2_t, y2_t, y, y2);
+                    console.info(x1_t, y1_t, x2_t, y2_t);
+                    console.info("再次尝试滑动");
+                    swipe(x1_t, y1_t, x2_t, y2_t, 1500);
+                }
+                sleep_i++;
+                sleep(900);
+            }
+            /*
+            device.setMusicVolume(100);
+            device.vibrate(3000);
+            media.playMusic("./1.wav");
+            sleep(3005);
+            xxx = false;
+            if (whethe) device.setMusicVolume(0);*/
+        }
+        if (status) status = false;
+    }
+});
+thread1.waitFor();
+
 var init_true = false;
 var downloadDialog = null;
 // var init_url = "https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/question";    
