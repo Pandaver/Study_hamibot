@@ -155,14 +155,14 @@ var file_tmp = false;
 var tikus = '';
 var wht_update_tiku_end = false;
 var wht_update_tiku_competition_end = false;
-var update_tiku_competition = true;
-var update_tiku = true;
+var update_tiku_competition = false;
+var update_tiku = false;
 
 function wht_update_tiku() { // 是否更新题库
 	threads.start(function() {
 		//			console.info('查看使用须知，15s后自动关闭');
 		var d = dialogs.build({
-			title: "取消更新题库？",
+			title: "是否取消更新题库？",
 			content: "点击取消将不更新每日每周专项题库 \n 5秒后关闭",
 			positive: "取消",
 		}).on("positive", () => {
@@ -170,15 +170,15 @@ function wht_update_tiku() { // 是否更新题库
 			// setClip(text);
 			d = null;
 			// text = null;
-			update_tiku = false;
-			wht_update_tiku_end = false;
+			wht_update_tiku_end = true;
 		}).show();
 		sleep(5000);
-		if (!update_tiku) {
+		if (!wht_update_tiku_end) {
 			d.dismiss();
 			// setClip(text)
 			d = null;
 			// text = null;
+			update_tiku = true;
 			wht_update_tiku_end = true;
 		}
 	});
@@ -188,7 +188,7 @@ function wht_update_tiku_competition() { // 是否更新题库
 	threads.start(function() {
 		//			console.info('查看使用须知，15s后自动关闭');
 		var b = dialogs.build({
-			title: "取消更新竞赛和挑战答题题库？",
+			title: "是否取消更新竞赛和挑战答题题库？",
 			content: "点击取消将不更新竞赛和挑战答题题库 \n 5秒后关闭",
 			positive: "取消",
 		}).on("positive", () => {
@@ -196,15 +196,15 @@ function wht_update_tiku_competition() { // 是否更新题库
 			// setClip(text);
 			b = null;
 			// text = null;
-			update_tiku_competition = false;
-			wht_update_tiku_competition_end = false;
+			wht_update_tiku_competition_end = true;
 		}).show();
 		sleep(5000);
-		if (!update_tiku_competition) {
+		if (!wht_update_tiku_competition_end) {
 			b.dismiss();
 			// setClip(text)
 			b = null;
 			// text = null;
+			update_tiku_competition = true;
 			wht_update_tiku_competition_end = true;
 		}
 	});
