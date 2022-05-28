@@ -5,7 +5,7 @@ importClass(java.net.URL);
 importClass(java.io.File);
 importClass(java.io.FileOutputStream);
 if (hamibot.env.QuestionBank_URL == undefined) {
-	var url = 'https://cdn.jsdelivr.net/gh/wangwang-code/1@main/QuestionBank.db';
+	var url = 'https://git.yumenaka.net/https://raw.githubusercontent.com/Pandaver/XXQG_TiKu_Transform/main/QuestionBank.db';
 	console.info('每日每周专项使用默认题库地址');
 } else {
 	var url = hamibot.env.QuestionBank_URL;
@@ -144,7 +144,7 @@ var downloadDialog = null;
 if (hamibot.env.init_url == undefined) {
 	// var init_url = 'https://gitee.com/wangwang-code/tiku/raw/main/question';
 	var init_url =
-		'https://git.yumenaka.net/https://raw.githubusercontent.com/wangwang-code/Study_hamibot/master/question';
+		'https://git.yumenaka.net/https://raw.githubusercontent.com/Pandaver/XXQG_TiKu_Transform/main/question';
 	console.info('四人/双人/挑战使用默认题库地址');
 } else {
 	var init_url = hamibot.env.init_url;
@@ -155,23 +155,23 @@ var file_tmp = false;
 var tikus = '';
 var wht_update_tiku_end = false;
 var wht_update_tiku_competition_end = false;
-var update_tiku_competition = false;
-var update_tiku = false;
+var update_tiku_competition = true;
+var update_tiku = true;
 
 function wht_update_tiku() { // 是否更新题库
 	threads.start(function() {
 		//			console.info('查看使用须知，15s后自动关闭');
 		var d = dialogs.build({
-			title: "是否更新题库？",
-			content: "点击确定将更新每日每周专项题库 \n 5秒后关闭",
-			positive: "确定",
+			title: "取消更新题库？",
+			content: "点击取消将不更新每日每周专项题库 \n 5秒后关闭",
+			positive: "取消",
 		}).on("positive", () => {
 			d.dismiss();
 			// setClip(text);
 			d = null;
 			// text = null;
-			update_tiku = true;
-			wht_update_tiku_end = true;
+			update_tiku = false;
+			wht_update_tiku_end = false;
 		}).show();
 		sleep(5000);
 		if (!update_tiku) {
@@ -188,16 +188,16 @@ function wht_update_tiku_competition() { // 是否更新题库
 	threads.start(function() {
 		//			console.info('查看使用须知，15s后自动关闭');
 		var b = dialogs.build({
-			title: "是否更新竞赛和挑战答题题库？",
-			content: "点击确定将更新竞赛和挑战答题题库 \n 5秒后关闭",
-			positive: "确定",
+			title: "取消更新竞赛和挑战答题题库？",
+			content: "点击取消将不更新竞赛和挑战答题题库 \n 5秒后关闭",
+			positive: "取消",
 		}).on("positive", () => {
 			b.dismiss();
 			// setClip(text);
 			b = null;
 			// text = null;
-			update_tiku_competition = true;
-			wht_update_tiku_competition_end = true;
+			update_tiku_competition = false;
+			wht_update_tiku_competition_end = false;
 		}).show();
 		sleep(5000);
 		if (!update_tiku_competition) {
