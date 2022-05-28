@@ -1993,12 +1993,16 @@ function dailyAnswer() {
 		// } //冗余
 		dailyQuestionLoop();
 		if (text("再练一次").exists()) {
+			delay(1.5);
+			while(status) {console.log("主线程暂停中");sleep(750);};
 			console.log("每周答题结束！")
 			text("返回").click();
 			delay(2);
 			back();
 			break;
 		} else if (text("查看解析").exists()) {
+			delay(1.5);
+            		while(status) {console.log("主线程暂停中");sleep(750);};
 			console.log("专项答题结束！")
 			back();
 			delay(0.5);
@@ -2013,6 +2017,8 @@ function dailyAnswer() {
 				console.warn("第" + (dlNum + 1).toString() + "轮答题:");
 				delay(1);
 			} else {
+				delay(1.5);
+               			while(status) {console.log("主线程暂停中");sleep(750);};
 				console.log("每日答题结束！")
 				text("返回").click();
 				delay(2);
@@ -2286,6 +2292,8 @@ function challengeQuestion() {
 				qCount = randomNum(3, 6);
 			}
 			if (lNum >= lCount) {
+				delay(1.2);
+                		while(status) {console.log("主线程暂停中");sleep(750);};
 				console.log("挑战答题结束！返回我要答题界面！");
 				if (复活) {
 					textContains('每局仅可复活一次').waitFor();
@@ -3386,6 +3394,8 @@ function zsyAnswer() {
 		// console.warn('额外一轮结束!');
 	}
 	console.info('答题结束'); // 竞赛结束
+	while(status) {console.log("主线程暂停中");sleep(750);};
+    	delay(2);
 	back();
 	delay(3);
 	back();
