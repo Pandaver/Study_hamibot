@@ -1,4 +1,4 @@
-# 尽量整合，最基本更新
+# 尽量整合，做最基本可用更新
 
 # 目前Study代码的冗余太多（垃圾代码），且逻辑混乱，需要重写
 
@@ -44,6 +44,14 @@
 - [电报交流群（ww修改）](https://t.me/+yia2ylnVlPtkODE1)
 - **一张图片、一句话，并不能解决问题。**
 - **完整日志内容才能解决问题**
+
+---
+
+## 2022.5.28更新
+
+- 更改默认[题库地址](https://github.com/Pandaver/XXQG_TiKu_Transform)
+- 默认强制更新每日每周专项题库
+- 整合[Study_autoxjs](https://github.com/wangwang-code/Study_autoxjs)反滑块验证
 
 ---
 
