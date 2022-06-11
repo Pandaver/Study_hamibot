@@ -86,7 +86,7 @@ var thread1 = threads.start(function () {
             status = true;
             console.error("人机验证！");
             text("向右滑动验证").waitFor();
-            var hk_t = className("android.widget.TextView").text("向右滑动验证").findOne().parent().parent().bounds();
+            var hk_t = textContains("向右滑动验证").findOne().parent().parent().bounds();
             console.log(hk_t);
             var x1_t = hk_t.left + 50,
                 x2_t = hk_t.right - 30,
@@ -107,7 +107,7 @@ var thread1 = threads.start(function () {
                     }
                     delay(1);
                     text("向右滑动验证").waitFor();
-                    var hk_t = className("android.widget.TextView").text("向右滑动验证").findOne().parent().parent().bounds();
+                    var hk_t = textContains("向右滑动验证").findOne().parent().parent().bounds();
                     console.log(hk_t);
                     var x1_t = hk_t.left + 50,
                         x2_t = hk_t.right - 30,
