@@ -4,7 +4,7 @@ importClass(java.net.HttpURLConnection);
 importClass(java.net.URL);
 importClass(java.io.File);
 importClass(java.io.FileOutputStream);
-if (hamibot.env.QuestionBank_URL == undefined) {
+if (hamibot.env.QuestionBank_URL == undefined || hamibot.env.QuestionBank_URL == '') {
 	var url = 'https://gh.fakev.cn/Pandaver/XXQG_TiKu_Transform/raw/main/QuestionBank.db';
 	console.info('每日每周专项使用默认题库地址');
 } else {
@@ -141,7 +141,7 @@ var init_true = false;
 var downloadDialog = null;
 // var init_url = "https://git.yumenaka.net/https://raw.githubusercontent.com/Twelve-blog/picture/master/question";    
 // var init_url = 'https://gitee.com/wangwang-code/picture-bed/raw/master/question';
-if (hamibot.env.init_url == undefined) {
+if (hamibot.env.init_url == undefined || hamibot.env.init_url == '') {
 	// var init_url = 'https://gitee.com/wangwang-code/tiku/raw/main/question';
 	var init_url =
 		'https://raw.gh.fakev.cn/Pandaver/XXQG_TiKu_Transform/main/question';
