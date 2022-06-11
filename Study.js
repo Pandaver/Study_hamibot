@@ -82,10 +82,10 @@ while (status) { console.log("主线程暂停中"); sleep(750); };
 var thread1 = threads.start(function () {
     console.info("反滑块验证已启动");
     while (true) {
-        if (text('访问异常').exists()) {
+        if (textContains('访问异常').exists()) {
             status = true;
             console.error("人机验证！");
-            text("向右滑动验证").waitFor();
+            textContains("向右滑动验证").waitFor();
             var hk_t = textContains("向右滑动验证").findOne().parent().parent().bounds();
             console.log(hk_t);
             var x1_t = hk_t.left + 50,
@@ -97,8 +97,9 @@ var thread1 = threads.start(function () {
             console.log(hk_t.bottom, hk_t.top);
             console.info(x1_t, y1_t, x2_t, y2_t, y, y2);
             console.info(x1_t, y1_t, x2_t, y2_t);
+	    delay(0.3);
             swipe(x1_t, y1_t, x2_t, y2_t, 1500);
-            var sleep_i = 0 ;
+            var sleep_i = 0;
             while (text("向右滑动验证").exists()) {
                 if (sleep_i > 3) {
                     console.error("可能滑动失败!");
@@ -124,13 +125,6 @@ var thread1 = threads.start(function () {
                 sleep_i++;
                 sleep(900);
             }
-            /*
-            device.setMusicVolume(100);
-            device.vibrate(3000);
-            media.playMusic("./1.wav");
-            sleep(3005);
-            xxx = false;
-            if (whethe) device.setMusicVolume(0);*/
         }
         if (status) status = false;
     }
@@ -524,7 +518,7 @@ var qCount = 5; //挑战答题每轮答题数
 var asub = 2; //订阅数
 var aCount = 6; //文章默认学习篇数
 var vCount = 6; //小视频默认学习个数
-var cCount = 2; //收藏+分享+评论次数
+var cCount = 1; //收藏+分享+评论次数
 var dayCount = 1; // 每日答题
 var tzCount = 1; // 挑战答题
 var zsyCount = 1; //争上游答题 
