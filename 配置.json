@@ -8,14 +8,14 @@
 		"name": "QuestionBank_URL",
 		"type": "text",
 		"label": "自定义每日每周专项题库地址",
-		"placeholder": "https://cdn.jsdelivr.net/gh/Pandaver/XXQG_TiKu_Transform@main/QuestionBank.db",
+		"placeholder": "https://gh.fakev.cn/Pandaver/XXQG_TiKu_Transform/raw/main/QuestionBank.db",
 		"help": "一定要是直链！！，留空使用默认地址"
 	},
 	{
 		"name": "init_url",
 		"type": "text",
 		"label": "自定义题库四人/双人/挑战",
-		"placeholder": "https://cdn.jsdelivr.net/gh/Pandaver/XXQG_TiKu_Transform@main/question",
+		"placeholder": "https://raw.gh.fakev.cn/Pandaver/XXQG_TiKu_Transform/main/question",
 		"help": "一定要是直链！！，留空使用默认地址"
 	},
 	{
