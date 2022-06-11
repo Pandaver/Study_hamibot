@@ -5,7 +5,7 @@ importClass(java.net.URL);
 importClass(java.io.File);
 importClass(java.io.FileOutputStream);
 if (hamibot.env.QuestionBank_URL == undefined) {
-	var url = 'https://git.yumenaka.net/https://raw.githubusercontent.com/Pandaver/XXQG_TiKu_Transform/main/QuestionBank.db';
+	var url = 'https://gh.fakev.cn/Pandaver/XXQG_TiKu_Transform/raw/main/QuestionBank.db';
 	console.info('每日每周专项使用默认题库地址');
 } else {
 	var url = hamibot.env.QuestionBank_URL;
@@ -144,7 +144,7 @@ var downloadDialog = null;
 if (hamibot.env.init_url == undefined) {
 	// var init_url = 'https://gitee.com/wangwang-code/tiku/raw/main/question';
 	var init_url =
-		'https://git.yumenaka.net/https://raw.githubusercontent.com/Pandaver/XXQG_TiKu_Transform/main/question';
+		'https://raw.gh.fakev.cn/Pandaver/XXQG_TiKu_Transform/main/question';
 	console.info('四人/双人/挑战使用默认题库地址');
 } else {
 	var init_url = hamibot.env.init_url;
