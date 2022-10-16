@@ -79,56 +79,30 @@ while (status) { console.log("主线程暂停中"); sleep(750); };
 /**
  * 人机验证
  */
-var thread1 = threads.start(function () {
-    console.info("反滑块验证已启动");
-    while (true) {
-        if (textContains('访问异常').exists()) {
-            status = true;
-            console.error("人机验证！");
-            textContains("向右滑动验证").waitFor();
-            var hk_t = textContains("向右滑动验证").findOne().parent().parent().bounds();
-            console.log(hk_t);
-            var x1_t = hk_t.left + 50,
-                x2_t = hk_t.right - 30,
-                y = hk_t.bottom - hk_t.top,
-                y2 = y / 2,
-                y1_t = hk_t.top + y2,
-                y2_t = y1_t;
-            console.log(hk_t.bottom, hk_t.top);
-            console.info(x1_t, y1_t, x2_t, y2_t, y, y2);
-            console.info(x1_t, y1_t, x2_t, y2_t);
-	    delay(0.3);
-            swipe(x1_t, y1_t, x2_t, y2_t, 1500);
-            var sleep_i = 0;
-            while (text("向右滑动验证").exists()) {
-                if (sleep_i > 3) {
-                    console.error("可能滑动失败!");
-                    if (textContains("非常抱歉").exists()) {
-                        textContains("刷新").click();
-                    }
-                    delay(1);
-                    text("向右滑动验证").waitFor();
-                    var hk_t = textContains("向右滑动验证").findOne().parent().parent().bounds();
-                    console.log(hk_t);
-                    var x1_t = hk_t.left + 50,
-                        x2_t = hk_t.right - 30,
-                        y = hk_t.bottom - hk_t.top,
-                        y2 = y / 2,
-                        y1_t = hk_t.top + y2,
-                        y2_t = y1_t;
-                    console.log(hk_t.bottom, hk_t.top);
-                    console.info(x1_t, y1_t, x2_t, y2_t, y, y2);
-                    console.info(x1_t, y1_t, x2_t, y2_t);
-                    console.info("再次尝试滑动");
-                    swipe(x1_t, y1_t, x2_t, y2_t, 1500);
-                }
-                sleep_i++;
-                sleep(900);
-            }
-        }
-        if (status) status = false;
-    }
-});
+ var thread1 = threads.start(function () {
+  for (;;) {
+      textContains("访问异常").waitFor();
+      console.log("检测到滑动验证");
+      status = true;
+      var a = 1000;
+      var b = idContains("nc_1_n1t").findOne().bounds(),
+          c = text("向右滑动验证").findOne().bounds(),
+          d = b.centerX();
+      c = c.right - (d - c.left);
+      var e = (c - d) * random(5, 8) / 10 + d,
+          f = (c - d) * random(2, 3) / 10,
+          h = random(b.top,
+              b.bottom);
+      b = random(b.top, b.bottom);
+      log("y_start:", h, "x_start:", d, "x_mid:", e, "x_end:", c);
+      d = random(d - 7, d);
+      c = random(c, c + 10);
+      gesture(random(a, a + 50), [d, h], [e, b], [e - f, h], [c, b]);
+      sleep(500);
+      textContains("刷新").exists() ? click("刷新") : textContains("网络开小差").exists() ? click("确定") : (console.log("已完成滑动验证"), sleep(1E3))
+      if (status) status = false;
+  }
+})
 thread1.waitFor();
 
 var init_true = false;
