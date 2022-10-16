@@ -1133,7 +1133,7 @@ function getScores(i) {
 	while (!desc("工作").exists()); //等待加载出主页
 	console.log("正在获取积分...");
 	delay(2);
-	while (!text("积分明细").exists()) {
+	while (!text("学习积分").exists()) {
 		if (id("comm_head_xuexi_score").exists()) {
 			id("comm_head_xuexi_score").findOnce().click();
 		} else if (text("积分").exists()) {
@@ -1154,7 +1154,7 @@ function getScores(i) {
 				} catch (e) {
 					name = item.child(0).text();
 				}
-				let str = item.child(2).text().split("/");
+				let str = item.child(1).text().split("/");
 				let score = str[0].match(/[0-9][0-9]*/g);
 				myScores[name] = score;
 			});
