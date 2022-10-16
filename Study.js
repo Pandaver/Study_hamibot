@@ -1154,8 +1154,7 @@ function getScores(i) {
 				} catch (e) {
 					name = item.child(0).text();
 				}
-				let str = item.child(1).text().split("/");
-				let score = str[0].match(/[0-9][0-9]*/g);
+				let score = item.child(3).child(0).text();
 				myScores[name] = score;
 			});
 			err = true;
@@ -1207,7 +1206,7 @@ function getScores(i) {
 	vCount = 6 - myScores["视听学习"];
 	rTime = (6 - myScores["视听学习时长"]) * 60;
 	asub = 2 - myScores["订阅"];
-	sCount = 2 - myScores["分享"] * 2
+	sCount = 0
 	cCount = 1 - myScores["发表观点"]
 	if (myScores["每日答题"] < 5) dayCount = 1;
 	else dayCount = 0;
